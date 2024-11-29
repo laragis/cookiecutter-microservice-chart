@@ -9,7 +9,7 @@ setup(
     author='Audrey M. Roy Greenfeld',
     license='BSD',
     author_email='audrey@feldroy.com',
-    url='https://github.com/audreyfeldroy/cookiecutter-pypackage',
+    url='https://github.com/laragis/cookiecutter-microservice-chart',
     keywords=['cookiecutter', 'template', 'package', ],
     python_requires='>=3.10',
     classifiers=[

@@ -2,12 +2,12 @@
 Cookiecutter PyPackage
 ======================
 
-.. image:: https://pyup.io/repos/github/audreyfeldroy/cookiecutter-pypackage/shield.svg
-    :target: https://pyup.io/repos/github/audreyfeldroy/cookiecutter-pypackage/
+.. image:: https://pyup.io/repos/github/laragis/cookiecutter-microservice-chart/shield.svg
+    :target: https://pyup.io/repos/github/laragis/cookiecutter-microservice-chart/
     :alt: Updates
 
-.. image:: https://travis-ci.org/audreyfeldroy/cookiecutter-pypackage.svg?branch=master
-    :target: https://travis-ci.org/github/audreyfeldroy/cookiecutter-pypackage
+.. image:: https://travis-ci.org/laragis/cookiecutter-microservice-chart.svg?branch=master
+    :target: https://travis-ci.org/github/laragis/cookiecutter-microservice-chart
     :alt: Build Status
 
 .. image:: https://readthedocs.org/projects/cookiecutter-pypackage/badge/?version=latest
@@ -16,7 +16,7 @@ Cookiecutter PyPackage
 
 Cookiecutter_ template for a Python package.
 
-* GitHub repo: https://github.com/audreyfeldroy/cookiecutter-pypackage/
+* GitHub repo: https://github.com/laragis/cookiecutter-microservice-chart/
 * Documentation: https://cookiecutter-pypackage.readthedocs.io/
 * Free software: BSD license
 * Discord: https://discord.gg/PWXJr3upUE
@@ -39,8 +39,8 @@ Build Status
 
 Linux:
 
-.. image:: https://img.shields.io/travis/audreyfeldroy/cookiecutter-pypackage.svg
-    :target: https://travis-ci.org/audreyfeldroy/cookiecutter-pypackage
+.. image:: https://img.shields.io/travis/laragis/cookiecutter-microservice-chart.svg
+    :target: https://travis-ci.org/laragis/cookiecutter-microservice-chart
     :alt: Linux build status on Travis CI
 
 Windows:
@@ -59,7 +59,7 @@ Cookiecutter 1.4.0 or higher)::
 
 Generate a Python package project::
 
-    cookiecutter https://github.com/audreyfeldroy/cookiecutter-pypackage.git
+    python3 -m cookiecutter https://github.com/gtelots/cookiecutter-microservice-chart.git
 
 Then:
 

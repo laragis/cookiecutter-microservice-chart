@@ -1,5 +1,5 @@
 * {{ cookiecutter.project_name }} version:
-* Python version:
+* Helm version:
 * Operating System:
 
 ### Description
