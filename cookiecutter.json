@@ -1,18 +1,27 @@
 {
-  "full_name": "Truong Thanh Tung",
-  "email": "ttungbmt@gmail.com",
+  "chart_title": "Microservice",
+  "chart_name": "{{ cookiecutter.chart_title.lower()|replace(' ', '-')|replace('.', '-')|trim() }}",
+  "description": "Helm chart Boilerplate contains all the boilerplate you need to create a Helm chart.",
+  "chart_version": "0.1.0",
+  "app_version": "0.1.0",
+  "image_registry": "docker.io",
+  "organization": "laragis",
+  "image_name": "{{ cookiecutter.chart_name }}",
+  "image_tag": "0.1.0",
+  "author_name": "Truong Thanh Tung",
+  "use_db": [
+    "postgresql",
+    "none",
+    "mariadb",
+    "mysql"
+  ],
   "github_username": "ttungbmt",
-  "chart_title": "Microservice Chart Boilerplate",
-  "chart_name": "{{ cookiecutter.project_name.lower().replace(' ', '-') }}",
-  "chart_short_description": "Python Boilerplate contains all the boilerplate you need to create a Python package.",
-  "image_name": "{{ cookiecutter.github_username }}/{{ cookiecutter.chart_name }}",
-  "pypi_username": "{{ cookiecutter.github_username }}",
-  "version": "0.1.0",
-  "use_pytest": "n",
-  "use_pypi_deployment_with_travis": "y",
-  "add_pyup_badge": "n",
-  "command_line_interface": ["Typer", "Argparse", "No command-line interface"],
-  "create_author_file": "y",
-  "open_source_license": ["MIT license", "BSD license", "ISC license", "Apache Software License 2.0", "GNU General Public License v3", "Not open source"],
-  "__gh_slug": "{{ cookiecutter.github_username }}/{{ cookiecutter.chart_name }}"
+  "email": "{{ cookiecutter.github_username.lower() | trim() }}@gmail.com",
+  "license": [
+    "MIT",
+    "BSD-3",
+    "GNU GPL v3.0+",
+    "Apache Software License 2.0",
+    "Mozilla Public License 2.0"
+  ]
 }
