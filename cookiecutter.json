@@ -10,24 +10,32 @@
   "image_name": "{{ cookiecutter.chart_name }}",
   "image_tag": "0.1.0",
   "author_name": "Truong Thanh Tung",
-    "use_workload": [
+  "use_workload": [
     "deployment",
     "statefulset",
     "daemonset"
   ],
+  "use_autoscaling": [
+    "hpa",
+    "vpa",
+    "all",
+    "none"
+  ],
   "use_db": [
-    "postgresql",
     "none",
+    "postgresql",
     "mariadb",
     "mysql"
   ],
+  "use_cache": true,
   "github_username": "ttungbmt",
-  "email": "{{ cookiecutter.github_username.lower() | trim() }}@gmail.com",
+  "email": "{{ cookiecutter.github_username | lower | trim }}@gmail.com",
   "license": [
     "MIT",
     "BSD-3",
     "GNU GPL v3.0+",
     "Apache Software License 2.0",
     "Mozilla Public License 2.0"
-  ]
+  ],
+  "debug": true
 }
