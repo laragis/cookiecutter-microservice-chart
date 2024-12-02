@@ -5,10 +5,16 @@
   "chart_version": "0.1.0",
   "app_version": "0.1.0",
   "image_registry": "docker.io",
-  "organization": "laragis",
+  "organization": "LaraGIS",
+  "__organization_name": "{{ cookiecutter.organization | lower }}",
   "image_name": "{{ cookiecutter.chart_name }}",
   "image_tag": "0.1.0",
   "author_name": "Truong Thanh Tung",
+    "use_workload": [
+    "deployment",
+    "statefulset",
+    "daemonset"
+  ],
   "use_db": [
     "postgresql",
     "none",

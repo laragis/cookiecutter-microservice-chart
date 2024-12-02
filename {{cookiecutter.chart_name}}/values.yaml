@@ -83,7 +83,7 @@ diagnosticMode:
 ##
 image:
   registry: docker.io
-  repository: {{ cookiecutter.organization }}/{{ cookiecutter.image_name }}
+  repository: {{ cookiecutter.__organization_name }}/{{ cookiecutter.image_name }}
   tag: {{ cookiecutter.image_tag }}
   digest: ""
   ## Specify a imagePullPolicy
@@ -104,7 +104,7 @@ image:
 
 ## @section {{ cookiecutter.image_name }} Configuration parameters
 ## {{ cookiecutter.image_name }} settings based on environment variables
-## ref: https://github.com/{{ cookiecutter.organization }}/containers/tree/main/{{ cookiecutter.organization }}/{{ cookiecutter.image_name }}#environment-variables
+## ref: https://github.com/{{ cookiecutter.__organization_name }}/containers/tree/main/{{ cookiecutter.__organization_name }}/{{ cookiecutter.image_name }}#environment-variables
 ##
 ## @param command Override default container command (useful when using custom images)
 ##
