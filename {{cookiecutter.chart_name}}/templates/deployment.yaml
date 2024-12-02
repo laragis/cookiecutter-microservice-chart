@@ -27,11 +27,11 @@ spec:
       labels: {{ "{{" }}- include "common.labels.standard" ( dict "customLabels" $podLabels "context" $ ) | nindent 8 {{ "}}" }}
       annotations:
         checksum/config: {{ "{{" }} include (print $.Template.BasePath "/configmap.yaml") . | sha256sum {{ "}}" }}
-        {%- if cookiecutter.use_cache %}
-        checksum/database-secret: {{ "{{" }} include (print $.Template.BasePath "/database-secret.yaml") . | sha256sum {{ "}}" }}
+        {%- if cookiecutter.use_db != "none" %}
+        checksum/secret-database: {{ "{{" }} include (print $.Template.BasePath "/secret-database.yaml") . | sha256sum {{ "}}" }}
         {% endif -%}
         {%- if cookiecutter.use_cache %}
-        checksum/redis-secret: {{ "{{" }} include (print $.Template.BasePath "/redis-secret.yaml") . | sha256sum {{ "}}" }}
+        checksum/secret-redis: {{ "{{" }} include (print $.Template.BasePath "/secret-redis.yaml") . | sha256sum {{ "}}" }}
         {% endif -%}
         {{ "{{" }}- if .Values.podAnnotations {{ "}}" }}
         {{ "{{" }}- include "common.tplvalues.render" (dict "value" .Values.podAnnotations "context" $) | nindent 8 {{ "}}" }}
@@ -128,12 +128,38 @@ spec:
           env:
             - name: BITNAMI_DEBUG
               value: {{ "{{" }} ternary "true" "false" (or .Values.image.debug .Values.diagnosticMode.enabled) | quote {{ "}}" }}
+            {% if cookiecutter.use_db != "none" -%}
+            - name: DB_HOST
+              value: {{ "{{" }} include "{{ cookiecutter.chart_name }}.database.host" . {{ "}}" }}
+            - name: DB_PORT
+              value: {{ "{{" }} include "{{ cookiecutter.chart_name }}.database.port" . {{ "}}" }}
+            - name: DB_DATABASE
+              value: {{ "{{" }} include "{{ cookiecutter.chart_name }}.database.name" . {{ "}}" }}
+            - name: DB_USERNAME
+              value: {{ "{{" }} include "{{ cookiecutter.chart_name }}.database.user" . {{ "}}" }}
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ "{{" }} include "{{ cookiecutter.chart_name }}.database.secretName" . {{ "}}" }}
+                  key: {{ "{{" }} include "{{ cookiecutter.chart_name }}.database.secretPasswordKey" . {{ "}}" }}
+            {% endif -%}
+            {% if cookiecutter.use_cache -%}
+            - name: REDIS_HOST
+              value: {{ "{{" }} include "{{ cookiecutter.chart_name }}.redis.host" . {{ "}}" }}
+            - name: REDIS_PORT
+              value: {{ "{{" }} include "{{ cookiecutter.chart_name }}.redis.port" . {{ "}}" }}
+            {{ "{{" }}- if (include "{{ cookiecutter.chart_name }}.redis.auth.enabled" .) {{ "}}" }}
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ "{{" }} include "{{ cookiecutter.chart_name }}.redis.secretName" . {{ "}}" }}
+                  key: {{ "{{" }} include "{{ cookiecutter.chart_name }}.redis.secretPasswordKey" . {{ "}}" }}
+            {{ "{{" }}- end }}
+            {% endif -%}
             {{ "{{" }}- if .Values.extraEnvVars {{ "}}" }}
             {{ "{{" }}- include "common.tplvalues.render" (dict "value" .Values.extraEnvVars "context" $) | nindent 12 {{ "}}" }}
             {{ "{{" }}- end {{ "}}" }}
           envFrom:
-            - configMapRef:
-              name: {{ "{{" }} include "common.names.fullname" . {{ "}}" }}
             {{ "{{" }}- if .Values.extraEnvVarsCM {{ "}}" }}
             - configMapRef:
                 name: {{ "{{" }} include "common.tplvalues.render" (dict "value" .Values.extraEnvVarsCM "context" $) {{ "}}" }}

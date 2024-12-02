@@ -52,5 +52,5 @@ maintainers:
 name: {{ cookiecutter.chart_name }}
 sources:
 - https://github.com/{{ cookiecutter.__organization_name }}/charts/tree/main/{{ cookiecutter.__organization_name }}/{{ cookiecutter.chart_name }}
-- https://github.com/{{ cookiecutter.__organization_name }}/containers/tree/main/bitnami/{{cookiecutter.image_name}}
+- https://github.com/{{ cookiecutter.__organization_name }}/containers/tree/main/{{ cookiecutter.__organization_name }}/{{cookiecutter.image_name}}
 version: {{ cookiecutter.chart_version }}

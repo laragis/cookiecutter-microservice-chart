@@ -37,37 +37,6 @@ Create the name of the service account to use
 {{ "{{" }}- end -{{ "}}" }}
 {{ "{{" }}- end -{{ "}}" }}
 
-{{ "{{" }}/*
-Return the WordPress configuration secret
-*/{{ "}}" }}
-{{ "{{" }}- define "{{ cookiecutter.chart_name }}.configSecretName" -{{ "}}" }}
-{{ "{{" }}- if .Values.existingWordPressConfigurationSecret -{{ "}}" }}
-    {{ "{{" }}- printf "%s" (tpl .Values.existingWordPressConfigurationSecret $) -{{ "}}" }}
-{{ "{{" }}- else -{{ "}}" }}
-    {{ "{{" }}- printf "%s-configuration" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" -{{ "}}" }}
-{{ "{{" }}- end -{{ "}}" }}
-{{ "{{" }}- end -{{ "}}" }}
-
-{{ "{{" }}/*
-Return true if a secret object should be created for WordPress configuration
-*/{{ "}}" }}
-{{ "{{" }}- define "{{ cookiecutter.chart_name }}.createConfigSecret" -{{ "}}" }}
-{{ "{{" }}- if and .Values.wordpressConfiguration (not .Values.existingWordPressConfigurationSecret) {{ "}}" }}
-    {{ "{{" }}- true -{{ "}}" }}
-{{ "{{" }}- end -{{ "}}" }}
-{{ "{{" }}- end -{{ "}}" }}
-
-{{ "{{" }}/*
-Return the WordPress Secret Name
-*/{{ "}}" }}
-{{ "{{" }}- define "{{ cookiecutter.chart_name }}.secretName" -{{ "}}" }}
-{{ "{{" }}- if .Values.existingSecret {{ "}}" }}
-    {{ "{{" }}- printf "%s" .Values.existingSecret -{{ "}}" }}
-{{ "{{" }}- else -{{ "}}" }}
-    {{ "{{" }}- printf "%s" (include "common.names.fullname" .) -{{ "}}" }}
-{{ "{{" }}- end -{{ "}}" }}
-{{ "{{" }}- end -{{ "}}" }}
-
 {% if cookiecutter.use_db != "none" -%}
 {{ "{{" }}/*
 Create a default fully qualified app name.
@@ -76,10 +45,11 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{ "{{" }}- define "{{ cookiecutter.chart_name }}.{{ cookiecutter.use_db }}.fullname" -{{ "}}" }}
 {{ "{{" }}- include "common.names.dependency.fullname" (dict "chartName" "{{ cookiecutter.use_db }}" "chartValues" .Values.postgresql "context" $) -{{ "}}" }}
 {{ "{{" }}- end -{{ "}}" }}
+
 {{ "{{" }}/*
-Return the DB Hostname
+Return the Database Hostname
 */{{ "}}" }}
-{{ "{{" }}- define "{{ cookiecutter.chart_name }}.databaseHost" -{{ "}}" }}
+{{ "{{" }}- define "{{ cookiecutter.chart_name }}.database.host" -{{ "}}" }}
 {{ "{{" }}- if .Values.{{ cookiecutter.use_db }}.enabled {{ "}}" }}
     {{ "{{" }}- if eq .Values.{{ cookiecutter.use_db }}.architecture "replication" {{ "}}" }}
         {{ "{{" }}- printf "%s-primary" (include "{{ cookiecutter.chart_name }}.{{ cookiecutter.use_db }}.fullname" .) | trunc 63 | trimSuffix "-" -{{ "}}" }}
@@ -92,20 +62,20 @@ Return the DB Hostname
 {{ "{{" }}- end -{{ "}}" }}
 
 {{ "{{" }}/*
-Return the DB Port
+Return the Database Port
 */{{ "}}" }}
-{{ "{{" }}- define "{{ cookiecutter.chart_name }}.databasePort" -{{ "}}" }}
+{{ "{{" }}- define "{{ cookiecutter.chart_name }}.database.port" -{{ "}}" }}
 {{ "{{" }}- if .Values.{{ cookiecutter.use_db }}.enabled {{ "}}" }}
-    {{ "{{" }}- printf "3306" -{{ "}}" }}
+    {{ "{{" }}- print .Values.{{ cookiecutter.use_db }}.primary.service.ports.{{ cookiecutter.use_db }} -{{ "}}" }}
 {{ "{{" }}- else -{{ "}}" }}
     {{ "{{" }}- printf "%d" (.Values.externalDatabase.port | int ) -{{ "}}" }}
 {{ "{{" }}- end -{{ "}}" }}
 {{ "{{" }}- end -{{ "}}" }}
 
 {{ "{{" }}/*
-Return the DB Database Name
+Return the Database database name
 */{{ "}}" }}
-{{ "{{" }}- define "{{ cookiecutter.chart_name }}.databaseName" -{{ "}}" }}
+{{ "{{" }}- define "{{ cookiecutter.chart_name }}.database.name" -{{ "}}" }}
 {{ "{{" }}- if .Values.{{ cookiecutter.use_db }}.enabled {{ "}}" }}
     {{ "{{" }}- printf "%s" .Values.{{ cookiecutter.use_db }}.auth.database -{{ "}}" }}
 {{ "{{" }}- else -{{ "}}" }}
@@ -114,9 +84,9 @@ Return the DB Database Name
 {{ "{{" }}- end -{{ "}}" }}
 
 {{ "{{" }}/*
-Return the DB User
+Return the Database User
 */{{ "}}" }}
-{{ "{{" }}- define "{{ cookiecutter.chart_name }}.databaseUser" -{{ "}}" }}
+{{ "{{" }}- define "{{ cookiecutter.chart_name }}.database.user" -{{ "}}" }}
 {{ "{{" }}- if .Values.{{ cookiecutter.use_db }}.enabled {{ "}}" }}
     {{ "{{" }}- printf "%s" .Values.{{ cookiecutter.use_db }}.auth.username -{{ "}}" }}
 {{ "{{" }}- else -{{ "}}" }}
@@ -125,9 +95,9 @@ Return the DB User
 {{ "{{" }}- end -{{ "}}" }}
 
 {{ "{{" }}/*
-Return the DB Secret Name
+Return the Database secret name
 */{{ "}}" }}
-{{ "{{" }}- define "{{ cookiecutter.chart_name }}.databaseSecretName" -{{ "}}" }}
+{{ "{{" }}- define "{{ cookiecutter.chart_name }}.database.secretName" -{{ "}}" }}
 {{ "{{" }}- if .Values.{{ cookiecutter.use_db }}.enabled {{ "}}" }}
     {{ "{{" }}- if .Values.{{ cookiecutter.use_db }}.auth.existingSecret -{{ "}}" }}
         {{ "{{" }}- printf "%s" .Values.{{ cookiecutter.use_db }}.auth.existingSecret -{{ "}}" }}
@@ -142,10 +112,10 @@ Return the DB Secret Name
 {{ "{{" }}- end -{{ "}}" }}
 
 {{ "{{" }}/*
-Return the DB password Secret Key
+Return the Database password secret key
 */{{ "}}" }}
 {{ "{{" }}- define "{{ cookiecutter.chart_name }}.database.secretPasswordKey" -{{ "}}" }}
-{{ "{{" }}- if .Values.postgresql.enabled -{{ "}}" }}
+{{ "{{" }}- if .Values.{{ cookiecutter.use_db }}.enabled -{{ "}}" }}
     {{ "{{" }}- print "password" -{{ "}}" }}
 {{ "{{" }}- else -{{ "}}" }}
     {{ "{{" }}- if .Values.externalDatabase.existingSecret -{{ "}}" }}
@@ -155,6 +125,23 @@ Return the DB password Secret Key
     {{ "{{" }}- end -{{ "}}" }}
 {{ "{{" }}- end -{{ "}}" }}
 {{ "{{" }}- end -{{ "}}" }}
+
+{%- if cookiecutter.use_cache == "postgresql" %}
+{{ "{{" }}/*
+Return the Database password secret key
+*/{{ "}}" }}
+{{ "{{" }}- define "{{ cookiecutter.chart_name }}.database.secretPostgresPasswordKey" -{{ "}}" }}
+{{ "{{" }}- if .Values.postgresql.enabled -{{ "}}" }}
+    {{ "{{" }}- print "postgres-password" -{{ "}}" }}
+{{ "{{" }}- else -{{ "}}" }}
+    {{ "{{" }}- if .Values.externalDatabase.existingSecret -{{ "}}" }}
+        {{ "{{" }}- default "postgres-password" .Values.externalDatabase.existingSecretPostgresPasswordKey {{ "}}" }}
+    {{ "{{" }}- else -{{ "}}" }}
+        {{ "{{" }}- print "postgres-password" -{{ "}}" }}
+    {{ "{{" }}- end -{{ "}}" }}
+{{ "{{" }}- end -{{ "}}" }}
+{{ "{{" }}- end -{{ "}}" }}
+{% endif -%}
 {% endif -%}
 
 {%- if cookiecutter.use_cache %}
@@ -217,6 +204,15 @@ Return the Redis secret key
     {{ "{{" }}- else -{{ "}}" }}
         {{ "{{" }}- print "redis-password" -{{ "}}" }}
     {{ "{{" }}- end -{{ "}}" }}
+{{ "{{" }}- end -{{ "}}" }}
+{{ "{{" }}- end -{{ "}}" }}
+
+{{ "{{" }}/*
+Return whether Redis uses password authentication or not
+*/{{ "}}" }}
+{{ "{{" }}- define "{{ cookiecutter.chart_name }}.redis.auth.enabled" -{{ "}}" }}
+{{ "{{" }}- if or (and .Values.redis.enabled .Values.redis.auth.enabled) (and (not .Values.redis.enabled) (or .Values.externalRedis.password .Values.externalRedis.existingSecret)) {{ "}}" }}
+    {{ "{{" }}- true -{{ "}}" }}
 {{ "{{" }}- end -{{ "}}" }}
 {{ "{{" }}- end -{{ "}}" }}
 {% endif -%}

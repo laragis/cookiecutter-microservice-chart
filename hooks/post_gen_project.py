@@ -19,6 +19,14 @@ def remove_vpa_files():
   os.remove(os.path.join("templates", "vpa.yaml"))
 
 
+def remove_cache_files():
+  os.remove(os.path.join("templates", "secret-redis.yaml"))
+
+
+def remove_db_files():
+  os.remove(os.path.join("templates", "secret-database.yaml"))
+
+
 def remove_workload_files(type):
   workloads = ['deployment', 'statefulset', 'daemonset']
   filtered = list(filter(lambda x: x != type, workloads))
@@ -44,6 +52,14 @@ def main():
 
   # Workload
   remove_workload_files("{{ cookiecutter.use_workload }}")
+
+  # Redis
+  if "{{ cookiecutter.use_cache }}" == "False":
+    remove_cache_files()
+
+  # Database
+  if "{{ cookiecutter.use_db }}" == "none":
+    remove_db_files()
 
 
 if __name__ == "__main__":

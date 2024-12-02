@@ -22,8 +22,8 @@
     "none"
   ],
   "use_db": [
-    "none",
     "postgresql",
+    "none",
     "mariadb",
     "mysql"
   ],

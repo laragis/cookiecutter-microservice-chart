@@ -43,7 +43,8 @@ The [Parameters](#parameters) section lists the parameters that can be configure
 
 ### Resource requests and limits
 
-{{ cookiecutter.organization }} charts allow setting resource requests and limits for all containers inside the chart deployment. These are
+{{ cookiecutter.organization }} charts allow setting resource requests and limits for all containers inside the chart
+deployment. These are
 inside the `resources` value (check parameter table). Setting requests is essential for production workloads and these
 should be adapted to your specific use case.
 
@@ -54,53 +55,28 @@ However, in production workloads using `resourcePreset` is discouraged as it may
 Find more information on container resource management in
 the [official Kubernetes documentation](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/).
 
-### Prometheus metrics
-
-This chart can be integrated with Prometheus by setting `metrics.enabled` to `true`. This will deploy a sidecar
-container with [apache-exporter](https://github.com/Lusitaniae/apache_exporter) in all pods and a `metrics` service,
-which can be configured under the `metrics.service` section. This `metrics` service will have the necessary annotations
-to be automatically scraped by Prometheus.
-
-#### Prometheus requirements
-
-It is necessary to have a working installation of Prometheus or Prometheus Operator for the integration to work. Install
-the [{{ cookiecutter.organization }} Prometheus helm chart](https://github.com/bitnami/charts/tree/main/bitnami/prometheus) or
-the [{{ cookiecutter.organization }} Kube Prometheus helm chart](https://github.com/bitnami/charts/tree/main/bitnami/kube-prometheus) to easily
-have a working Prometheus in your cluster.
-
-#### Integration with Prometheus Operator
-
-The chart can deploy `ServiceMonitor` objects for integration with Prometheus Operator installations. To do so, set the
-value `metrics.serviceMonitor.enabled=true`. Ensure that the Prometheus Operator `CustomResourceDefinitions` are
-installed in the cluster or it will fail with the following error:
-
-```text
-no matches for kind "ServiceMonitor" in version "monitoring.coreos.com/v1"
-```
-
-Install the [{{ cookiecutter.organization }} Kube Prometheus helm chart](https://github.com/bitnami/charts/tree/main/bitnami/kube-prometheus)
-for having the necessary CRDs and the Prometheus Operator.
-
 ### [Rolling VS Immutable tags](https://techdocs.broadcom.com/us/en/vmware-tanzu/application-catalog/tanzu-application-catalog/services/tac-doc/apps-tutorials-understand-rolling-tags-containers-index.html)
 
 It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not
 change automatically if the same tag is updated with a different image.
 
-{{ cookiecutter.organization }} will release a new chart updating its containers if a new version of the main container, significant changes, or
+{{ cookiecutter.organization }} will release a new chart updating its containers if a new version of the main container,
+significant changes, or
 critical vulnerabilities exist.
 
 ### Known limitations
 
+{%- if cookiecutter.use_db != "none" %}
 ### External database support
 
 You may want to have {{ cookiecutter.chart_title }} connect to an external database rather than installing one inside
 your cluster. Typical reasons for this are to use a managed database service, or to share a common database server for
 all your applications. To achieve this, the chart allows you to specify credentials for an external database with
 the [`externalDatabase` parameter](#database-parameters). You should also disable the MariaDB installation with
-the `mariadb.enabled` option. Here is an example:
+the `{{ cookiecutter.chart_name }}.enabled` option. Here is an example:
 
 ```console
-mariadb.enabled=false
+{{ cookiecutter.use_db }}.enabled=false
 externalDatabase.host=myexternalhost
 externalDatabase.user=myuser
 externalDatabase.password=mypassword
@@ -115,11 +91,13 @@ execute the installation wizard, potentially modifying or resetting the data in 
 
 [Refer to the container documentation for more information](https://github.com/bitnami/containers/tree/main/bitnami/{{
 cookiecutter.chart_name }}#connect-{{ cookiecutter.chart_name }}-container-to-an-existing-database).
+{% endif -%}
 
+{% if cookiecutter.use_cache %}
 ### Redis
 
 This chart provides support for using Redis to cache database queries and objects improving the website performance.
-To enable this feature, set `{{ cookiecutter.chart_name }}ConfigureCache` and `redis.enabled` parameters to `true`.
+To enable this feature, set `redis.enabled` parameters to `true`.
 
 It is also possible to use an external cache server rather than installing one inside your cluster. To achieve this, the
 chart allows you to specify credentials for an external cache server with
@@ -127,11 +105,11 @@ the [`externalCache` parameter](#database-parameters). You should also disable t
 the `redis.enabled` option. Here is an example:
 
 ```console
-{{ cookiecutter.chart_name }}ConfigureCache=true
 redis.enabled=false
 externalCache.host=myexternalcachehost
 externalCache.port=11211
 ```
+{%- endif %}
 
 ### Ingress
 
@@ -204,34 +182,6 @@ wrj2wDbCDCFmfqnSJ+dKI3vFLlEz44sAV8jX/kd4Y6ZTQhlLbYc=
   issuance of TLS certificates, add to `*.ingress.annotations`
   the [corresponding ones](https://cert-manager.io/docs/usage/ingress/#supported-annotations) for cert-manager.
 - If using self-signed certificates created by Helm, set both `*.ingress.tls` and `*.ingress.selfSigned` to `true`.
-
-### `.htaccess` files
-
-For performance and security reasons, it is a good practice to configure Apache with the `AllowOverride None` directive.
-Instead of using `.htaccess` files, Apache will load the same directives at boot time. These directives are located
-in `/opt/bitnami/{{ cookiecutter.chart_name }}/{{ cookiecutter.chart_name }}-htaccess.conf`.
-
-By default, the container image includes all the default `.htaccess` files in {{ cookiecutter.chart_title }} (together
-with the default plugins). To enable this feature, install the chart with the value `allowOverrideNone=yes`.
-
-However, some plugins may include `.htaccess` directives that will not be loaded when `AllowOverride` is set to `None`.
-To make them work, create a custom `{{ cookiecutter.chart_name }}-htaccess.conf` file with all the required directives.
-After creating it,
-create a Kubernetes ConfigMap with it (for example, named `custom-htaccess`) and install the chart with the correct
-parameters as shown below:
-
-```text
-    allowOverrideNone=true
-    customHTAccessCM=custom-htaccess
-```
-
-Some plugins permit editing the `.htaccess` file and it may be necessary to persist it in order to keep those edits. To
-make these plugins work, set the `htaccessPersistenceEnabled` parameter as shown below:
-
-```text
-    allowOverrideNone=false
-    htaccessPersistenceEnabled=true
-```
 
 ## Persistence
 
@@ -354,51 +304,11 @@ the `podAffinityPreset`, `podAntiAffinityPreset`, or `nodeAffinityPreset` parame
 
 | Name                                              | Description                                                                                                       | Value              |
 |---------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|--------------------|
-| `{{ cookiecutter.chart_name }}Username`           | {{ cookiecutter.chart_title }} username                                                                           | `user`             |
-| `{{ cookiecutter.chart_name }}Password`           | {{ cookiecutter.chart_title }} user password                                                                      | `""`               |
-| `existingSecret`                                  | Name of existing secret containing {{ cookiecutter.chart_title }} credentials                                     | `""`               |
-| `{{ cookiecutter.chart_name }}Email`              | {{ cookiecutter.chart_title }} user email                                                                         | `user@example.com` |
-| `{{ cookiecutter.chart_name }}FirstName`          | {{ cookiecutter.chart_title }} user first name                                                                    | `FirstName`        |
-| `{{ cookiecutter.chart_name }}LastName`           | {{ cookiecutter.chart_title }} user last name                                                                     | `LastName`         |
-| `{{ cookiecutter.chart_name }}BlogName`           | Blog name                                                                                                         | `User's Blog!`     |
-| `{{ cookiecutter.chart_name }}TablePrefix`        | Prefix to use for {{ cookiecutter.chart_title }} database tables                                                  | `wp_`              |
-| `{{ cookiecutter.chart_name }}Scheme`             | Scheme to use to generate {{ cookiecutter.chart_title }} URLs                                                     | `http`             |
-| `{{ cookiecutter.chart_name }}SkipInstall`        | Skip wizard installation                                                                                          | `false`            |
-| `{{ cookiecutter.chart_name }}ExtraConfigContent` | Add extra content to the default wp-config.php file                                                               | `""`               |
-| `{{ cookiecutter.chart_name }}Configuration`      | The content for your custom wp-config.php file (advanced feature)                                                 | `""`               |
-| `existingWordPressConfigurationSecret`            | The name of an existing secret with your custom wp-config.php file (advanced feature)                             | `""`               |
-| `{{ cookiecutter.chart_name }}ConfigureCache`     | Enable W3 Total Cache plugin and configure cache settings                                                         | `false`            |
-| `{{ cookiecutter.chart_name }}Plugins`            | Array of plugins to install and activate. Can be specified as `all` or `none`.                                    | `none`             |
-| `apacheConfiguration`                             | The content for your custom httpd.conf file (advanced feature)                                                    | `""`               |
-| `existingApacheConfigurationConfigMap`            | The name of an existing secret with your custom httpd.conf file (advanced feature)                                | `""`               |
-| `customPostInitScripts`                           | Custom post-init.d user scripts                                                                                   | `{}`               |
-| `smtpHost`                                        | SMTP server host                                                                                                  | `""`               |
-| `smtpPort`                                        | SMTP server port                                                                                                  | `""`               |
-| `smtpUser`                                        | SMTP username                                                                                                     | `""`               |
-| `smtpPassword`                                    | SMTP user password                                                                                                | `""`               |
-| `smtpProtocol`                                    | SMTP protocol                                                                                                     | `""`               |
-| `smtpFromEmail`                                   | SMTP from email (default is `smtpUser`)                                                                           | `""`               |
-| `smtpFromName`                                    | SMTP from name  (default is `{{ cookiecutter.chart_name }}FirstName` and `{{ cookiecutter.chart_name }}LastName`) | `""`               |
-| `smtpExistingSecret`                              | The name of an existing secret with SMTP credentials                                                              | `""`               |
-| `allowEmptyPassword`                              | Allow the container to be started with blank passwords                                                            | `true`             |
-| `allowOverrideNone`                               | Configure Apache to prohibit overriding directives with htaccess files                                            | `false`            |
-| `overrideDatabaseSettings`                        | Allow overriding the database settings persisted in wp-config.php                                                 | `false`            |
-| `htaccessPersistenceEnabled`                      | Persist custom changes on htaccess files                                                                          | `false`            |
-| `customHTAccessCM`                                | The name of an existing ConfigMap with custom htaccess rules                                                      | `""`               |
 | `command`                                         | Override default container command (useful when using custom images)                                              | `[]`               |
 | `args`                                            | Override default container args (useful when using custom images)                                                 | `[]`               |
 | `extraEnvVars`                                    | Array with extra environment variables to add to the {{ cookiecutter.chart_title }} container                     | `[]`               |
 | `extraEnvVarsCM`                                  | Name of existing ConfigMap containing extra env vars                                                              | `""`               |
 | `extraEnvVarsSecret`                              | Name of existing Secret containing extra env vars                                                                 | `""`               |
-
-### {{ cookiecutter.chart_title }} Multisite Configuration parameters
-
-| Name                            | Description                                                                                                                        | Value       |
-|---------------------------------|------------------------------------------------------------------------------------------------------------------------------------|-------------|
-| `multisite.enable`              | Whether to enable {{ cookiecutter.chart_title }} Multisite configuration.                                                          | `false`     |
-| `multisite.host`                | {{ cookiecutter.chart_title }} Multisite hostname/address. This value is mandatory when enabling Multisite mode.                   | `""`        |
-| `multisite.networkType`         | {{ cookiecutter.chart_title }} Multisite network type to enable. Allowed values: `subfolder`, `subdirectory` or `subdomain`.       | `subdomain` |
-| `multisite.enableNipIoRedirect` | Whether to enable IP address redirection to nip.io wildcard DNS. Useful when running on an IP address with subdomain network type. | `false`     |
 
 ### {{ cookiecutter.chart_title }} deployment parameters
 
@@ -407,7 +317,7 @@ the `podAffinityPreset`, `podAntiAffinityPreset`, or `nodeAffinityPreset` parame
 | `replicaCount`                                      | Number of {{ cookiecutter.chart_title }} replicas to deploy                                                                                                                                                       | `1`              |
 | `updateStrategy.type`                               | {{ cookiecutter.chart_title }} deployment strategy type                                                                                                                                                           | `RollingUpdate`  |
 | `schedulerName`                                     | Alternate scheduler                                                                                                                                                                                               | `""`             |
-| `terminationGracePeriodSeconds`                     | In seconds, time given to the WordPress pod to terminate gracefully                                                                                                                                               | `""`             |
+| `terminationGracePeriodSeconds`                     | In seconds, time given to the {{ cookiecutter.chart_title }} pod to terminate gracefully                                                                                                                          | `""`             |
 | `topologySpreadConstraints`                         | Topology Spread Constraints for pod assignment spread across your cluster among failure-domains. Evaluated as a template                                                                                          | `[]`             |
 | `priorityClassName`                                 | Name of the existing priority class to be used by {{ cookiecutter.chart_title }} pods, priority class needs to be created beforehand                                                                              | `""`             |
 | `automountServiceAccountToken`                      | Mount Service Account token in pod                                                                                                                                                                                | `false`          |
@@ -502,21 +412,6 @@ the `podAffinityPreset`, `podAntiAffinityPreset`, or `nodeAffinityPreset` parame
 | `ingress.extraTls`                  | TLS configuration for additional hostname(s) to be covered with this ingress record                                                                      | `[]`                                  |
 | `ingress.secrets`                   | Custom TLS certificates as secrets                                                                                                                       | `[]`                                  |
 | `ingress.extraRules`                | Additional rules to be covered with this ingress record                                                                                                  | `[]`                                  |
-| `secondaryIngress.enabled`          | Enable ingress record generation for {{ cookiecutter.chart_title }}                                                                                      | `false`                               |
-| `secondaryIngress.pathType`         | Ingress path type                                                                                                                                        | `ImplementationSpecific`              |
-| `secondaryIngress.apiVersion`       | Force Ingress API version (automatically detected if not set)                                                                                            | `""`                                  |
-| `secondaryIngress.ingressClassName` | IngressClass that will be be used to implement the Ingress (Kubernetes 1.18+)                                                                            | `""`                                  |
-| `secondaryIngress.hostname`         | Default host for the ingress record. The hostname is templated and thus can contain other variable references.                                           | `{{ cookiecutter.chart_name }}.local` |
-| `secondaryIngress.path`             | Default path for the ingress record                                                                                                                      | `/`                                   |
-| `secondaryIngress.annotations`      | Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations.                         | `{}`                                  |
-| `secondaryIngress.tls`              | Enable TLS configuration for the host defined at `secondaryIngress.hostname` parameter                                                                   | `false`                               |
-| `secondaryIngress.tlsWwwPrefix`     | Adds www subdomain to default cert                                                                                                                       | `false`                               |
-| `secondaryIngress.selfSigned`       | Create a TLS secret for this ingress record using self-signed certificates generated by Helm                                                             | `false`                               |
-| `secondaryIngress.extraHosts`       | An array with additional hostname(s) to be covered with the ingress record. The host names are templated and thus can contain other variable references. | `[]`                                  |
-| `secondaryIngress.extraPaths`       | An array with additional arbitrary paths that may need to be added to the ingress under the main host                                                    | `[]`                                  |
-| `secondaryIngress.extraTls`         | TLS configuration for additional hostname(s) to be covered with this ingress record                                                                      | `[]`                                  |
-| `secondaryIngress.secrets`          | Custom TLS certificates as secrets                                                                                                                       | `[]`                                  |
-| `secondaryIngress.extraRules`       | Additional rules to be covered with this ingress record                                                                                                  | `[]`                                  |
 
 ### Persistence Parameters
 
@@ -546,6 +441,8 @@ the `podAffinityPreset`, `podAntiAffinityPreset`, or `nodeAffinityPreset` parame
 
 | Name                                          | Description                                                                                                                                    | Value   |
 |-----------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|---------|
+| `rbac.create`                                 | Create Role and RoleBinding                                                                                                                    | `false` |
+| `rbac.rules`                                  | Custom RBAC rules to set                                                                                                                       | `[]`    |
 | `serviceAccount.create`                       | Enable creation of ServiceAccount for {{ cookiecutter.chart_title }} pod                                                                       | `true`  |
 | `serviceAccount.name`                         | The name of the ServiceAccount to use.                                                                                                         | `""`    |
 | `serviceAccount.automountServiceAccountToken` | Allows auto mount of ServiceAccountToken on the serviceAccount created                                                                         | `false` |
@@ -559,63 +456,6 @@ the `podAffinityPreset`, `podAntiAffinityPreset`, or `nodeAffinityPreset` parame
 | `autoscaling.targetCPU`                       | Target CPU utilization percentage                                                                                                              | `50`    |
 | `autoscaling.targetMemory`                    | Target Memory utilization percentage                                                                                                           | `50`    |
 
-### Metrics Parameters
-
-| Name                                                        | Description                                                                                                                                                                                                                       | Value                             |
-|-------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------|
-| `metrics.enabled`                                           | Start a sidecar prometheus exporter to expose metrics                                                                                                                                                                             | `false`                           |
-| `metrics.image.registry`                                    | Apache exporter image registry                                                                                                                                                                                                    | `REGISTRY_NAME`                   |
-| `metrics.image.repository`                                  | Apache exporter image repository                                                                                                                                                                                                  | `REPOSITORY_NAME/apache-exporter` |
-| `metrics.image.digest`                                      | Apache exporter image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag                                                                                                                   | `""`                              |
-| `metrics.image.pullPolicy`                                  | Apache exporter image pull policy                                                                                                                                                                                                 | `IfNotPresent`                    |
-| `metrics.image.pullSecrets`                                 | Apache exporter image pull secrets                                                                                                                                                                                                | `[]`                              |
-| `metrics.containerPorts.metrics`                            | Prometheus exporter container port                                                                                                                                                                                                | `9117`                            |
-| `metrics.livenessProbe.enabled`                             | Enable livenessProbe on Prometheus exporter containers                                                                                                                                                                            | `true`                            |
-| `metrics.livenessProbe.initialDelaySeconds`                 | Initial delay seconds for livenessProbe                                                                                                                                                                                           | `15`                              |
-| `metrics.livenessProbe.periodSeconds`                       | Period seconds for livenessProbe                                                                                                                                                                                                  | `10`                              |
-| `metrics.livenessProbe.timeoutSeconds`                      | Timeout seconds for livenessProbe                                                                                                                                                                                                 | `5`                               |
-| `metrics.livenessProbe.failureThreshold`                    | Failure threshold for livenessProbe                                                                                                                                                                                               | `3`                               |
-| `metrics.livenessProbe.successThreshold`                    | Success threshold for livenessProbe                                                                                                                                                                                               | `1`                               |
-| `metrics.readinessProbe.enabled`                            | Enable readinessProbe on Prometheus exporter containers                                                                                                                                                                           | `true`                            |
-| `metrics.readinessProbe.initialDelaySeconds`                | Initial delay seconds for readinessProbe                                                                                                                                                                                          | `5`                               |
-| `metrics.readinessProbe.periodSeconds`                      | Period seconds for readinessProbe                                                                                                                                                                                                 | `10`                              |
-| `metrics.readinessProbe.timeoutSeconds`                     | Timeout seconds for readinessProbe                                                                                                                                                                                                | `3`                               |
-| `metrics.readinessProbe.failureThreshold`                   | Failure threshold for readinessProbe                                                                                                                                                                                              | `3`                               |
-| `metrics.readinessProbe.successThreshold`                   | Success threshold for readinessProbe                                                                                                                                                                                              | `1`                               |
-| `metrics.startupProbe.enabled`                              | Enable startupProbe on Prometheus exporter containers                                                                                                                                                                             | `false`                           |
-| `metrics.startupProbe.initialDelaySeconds`                  | Initial delay seconds for startupProbe                                                                                                                                                                                            | `10`                              |
-| `metrics.startupProbe.periodSeconds`                        | Period seconds for startupProbe                                                                                                                                                                                                   | `10`                              |
-| `metrics.startupProbe.timeoutSeconds`                       | Timeout seconds for startupProbe                                                                                                                                                                                                  | `1`                               |
-| `metrics.startupProbe.failureThreshold`                     | Failure threshold for startupProbe                                                                                                                                                                                                | `15`                              |
-| `metrics.startupProbe.successThreshold`                     | Success threshold for startupProbe                                                                                                                                                                                                | `1`                               |
-| `metrics.customLivenessProbe`                               | Custom livenessProbe that overrides the default one                                                                                                                                                                               | `{}`                              |
-| `metrics.customReadinessProbe`                              | Custom readinessProbe that overrides the default one                                                                                                                                                                              | `{}`                              |
-| `metrics.customStartupProbe`                                | Custom startupProbe that overrides the default one                                                                                                                                                                                | `{}`                              |
-| `metrics.resourcesPreset`                                   | Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if metrics.resources is set (metrics.resources is recommended for production). | `nano`                            |
-| `metrics.resources`                                         | Set container requests and limits for different resources like CPU or memory (essential for production workloads)                                                                                                                 | `{}`                              |
-| `metrics.containerSecurityContext.enabled`                  | Enabled containers' Security Context                                                                                                                                                                                              | `true`                            |
-| `metrics.containerSecurityContext.seLinuxOptions`           | Set SELinux options in container                                                                                                                                                                                                  | `{}`                              |
-| `metrics.containerSecurityContext.runAsUser`                | Set containers' Security Context runAsUser                                                                                                                                                                                        | `1001`                            |
-| `metrics.containerSecurityContext.runAsGroup`               | Set containers' Security Context runAsGroup                                                                                                                                                                                       | `1001`                            |
-| `metrics.containerSecurityContext.runAsNonRoot`             | Set container's Security Context runAsNonRoot                                                                                                                                                                                     | `true`                            |
-| `metrics.containerSecurityContext.privileged`               | Set container's Security Context privileged                                                                                                                                                                                       | `false`                           |
-| `metrics.containerSecurityContext.readOnlyRootFilesystem`   | Set container's Security Context readOnlyRootFilesystem                                                                                                                                                                           | `true`                            |
-| `metrics.containerSecurityContext.allowPrivilegeEscalation` | Set container's Security Context allowPrivilegeEscalation                                                                                                                                                                         | `false`                           |
-| `metrics.containerSecurityContext.capabilities.drop`        | List of capabilities to be dropped                                                                                                                                                                                                | `["ALL"]`                         |
-| `metrics.containerSecurityContext.seccompProfile.type`      | Set container's Security Context seccomp profile                                                                                                                                                                                  | `RuntimeDefault`                  |
-| `metrics.service.ports.metrics`                             | Prometheus metrics service port                                                                                                                                                                                                   | `9150`                            |
-| `metrics.service.annotations`                               | Additional custom annotations for Metrics service                                                                                                                                                                                 | `{}`                              |
-| `metrics.serviceMonitor.enabled`                            | Create ServiceMonitor Resource for scraping metrics using Prometheus Operator                                                                                                                                                     | `false`                           |
-| `metrics.serviceMonitor.namespace`                          | Namespace for the ServiceMonitor Resource (defaults to the Release Namespace)                                                                                                                                                     | `""`                              |
-| `metrics.serviceMonitor.interval`                           | Interval at which metrics should be scraped.                                                                                                                                                                                      | `""`                              |
-| `metrics.serviceMonitor.scrapeTimeout`                      | Timeout after which the scrape is ended                                                                                                                                                                                           | `""`                              |
-| `metrics.serviceMonitor.labels`                             | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus                                                                                                                                             | `{}`                              |
-| `metrics.serviceMonitor.selector`                           | Prometheus instance selector labels                                                                                                                                                                                               | `{}`                              |
-| `metrics.serviceMonitor.relabelings`                        | RelabelConfigs to apply to samples before scraping                                                                                                                                                                                | `[]`                              |
-| `metrics.serviceMonitor.metricRelabelings`                  | MetricRelabelConfigs to apply to samples before ingestion                                                                                                                                                                         | `[]`                              |
-| `metrics.serviceMonitor.honorLabels`                        | Specify honorLabels parameter to add the scrape endpoint                                                                                                                                                                          | `false`                           |
-| `metrics.serviceMonitor.jobLabel`                           | The name of the label on the target service to use as the job name in prometheus.                                                                                                                                                 | `""`                              |
-
 ### NetworkPolicy parameters
 
 | Name                                    | Description                                                     | Value  |
@@ -628,10 +468,12 @@ the `podAffinityPreset`, `podAntiAffinityPreset`, or `nodeAffinityPreset` parame
 | `networkPolicy.ingressNSMatchLabels`    | Labels to match to allow traffic from other namespaces          | `{}`   |
 | `networkPolicy.ingressNSPodMatchLabels` | Pod labels to match to allow traffic from other namespaces      | `{}`   |
 
+
 ### Database Parameters
 
 | Name                                       | Description                                                                                                                                                                                                                | Value                                   |
 |--------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------|
+{%- if cookiecutter.use_db != "none" %}
 | `mariadb.enabled`                          | Deploy a MariaDB server to satisfy the applications database requirements                                                                                                                                                  | `true`                                  |
 | `mariadb.architecture`                     | MariaDB architecture. Allowed values: `standalone` or `replication`                                                                                                                                                        | `standalone`                            |
 | `mariadb.auth.rootPassword`                | MariaDB root password                                                                                                                                                                                                      | `""`                                    |
@@ -650,6 +492,8 @@ the `podAffinityPreset`, `podAntiAffinityPreset`, or `nodeAffinityPreset` parame
 | `externalDatabase.password`                | External Database user password                                                                                                                                                                                            | `""`                                    |
 | `externalDatabase.database`                | External Database database name                                                                                                                                                                                            | `bitnami_{{ cookiecutter.chart_name }}` |
 | `externalDatabase.existingSecret`          | The name of an existing secret with database credentials. Evaluated as a template                                                                                                                                          | `""`                                    |
+{% endif -%}
+{%- if cookiecutter.use_cache %}
 | `redis.enabled`                            | Deploy a Redis server for caching database queries                                                                                                                                                                         | `false`                                 |
 | `redis.auth.enabled`                       | Enable Redis authentication                                                                                                                                                                                                | `false`                                 |
 | `redis.auth.username`                      | Redis admin user                                                                                                                                                                                                           | `""`                                    |
@@ -660,24 +504,12 @@ the `podAffinityPreset`, `podAntiAffinityPreset`, or `nodeAffinityPreset` parame
 | `redis.resources`                          | Set container requests and limits for different resources like CPU or memory (essential for production workloads)                                                                                                          | `{}`                                    |
 | `externalCache.host`                       | External cache server host                                                                                                                                                                                                 | `localhost`                             |
 | `externalCache.port`                       | External cache server port                                                                                                                                                                                                 | `11211`                                 |
-
-Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
-
-```console
-helm install my-release \
-  --set {{ cookiecutter.chart_name }}Username=admin \
-  --set {{ cookiecutter.chart_name }}Password=password \
-  --set mariadb.auth.rootPassword=secretpassword \
-    oci://REGISTRY_NAME/REPOSITORY_NAME/{{ cookiecutter.chart_name }}
-```
+{% endif %}
 
 > Note: You need to substitute the placeholders `REGISTRY_NAME` and `REPOSITORY_NAME` with a reference to your Helm
 > chart registry and repository. For example, in the case of {{ cookiecutter.organization }}, you need to
 > use `REGISTRY_NAME=registry-1.docker.io`
 > and `REPOSITORY_NAME={{ cookiecutter.__organization_name }}`.
-
-The above command sets the {{ cookiecutter.chart_title }} administrator account username and password to `admin`
-and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
 
 > NOTE: Once this chart is deployed, it is not possible to change the application's access credentials, such as
 > usernames or passwords, using Helm. To change these application credentials after deployment, delete any persistent
@@ -694,7 +526,8 @@ helm install my-release -f values.yaml oci://REGISTRY_NAME/REPOSITORY_NAME/{{ co
 > chart registry and repository. For example, in the case of {{ cookiecutter.organization }}, you need to
 > use `REGISTRY_NAME=registry-1.docker.io`
 > and `REPOSITORY_NAME={{ cookiecutter.__organization_name }}`.
-> **Tip**: You can use the default [values.yaml](https://github.com/{{ cookiecutter.__organization_name }}/charts/tree/main/{{ cookiecutter.__organization_name }}/{{ cookiecutter.chart_name }}/values.yaml)
+> **Tip**:
+> You can use the default [values.yaml](https://github.com/{{ cookiecutter.__organization_name }}/charts/tree/main/{{ cookiecutter.__organization_name }}/{{ cookiecutter.chart_name }}/values.yaml)
 
 ## Troubleshooting
 
