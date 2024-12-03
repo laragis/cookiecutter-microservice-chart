@@ -101,6 +101,9 @@ image:
   ## Enable debug mode
   ##
   debug: false
+## @param enableHttps Configure Ghost to build application URLs using https
+##
+enableHttps: false
 
 ## @section {{ cookiecutter.image_name }} Configuration parameters
 ## {{ cookiecutter.image_name }} settings based on environment variables
@@ -391,7 +394,7 @@ lifecycleHooks: {}
 service:
   ## @param service.type {{ cookiecutter.chart_title }} service type
   ##
-  type: CluserIP
+  type: ClusterIP
   ## @param service.ports.http {{ cookiecutter.chart_title }} service HTTP port
   ## @param service.ports.https {{ cookiecutter.chart_title }} service HTTPS port
   ##
@@ -568,12 +571,6 @@ persistence:
   ## @param persistence.enabled Enable persistence using Persistent Volume Claims
   ##
   enabled: false
-  ## @param persistence.mountPath The path the data volume will be mounted at
-  ##
-  mountPath: ""
-  ## @param persistence.subPath The subdirectory of the volume to mount to
-  ##
-  subPath: ""
   ## @param persistence.storageClass Persistent Volume storage class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -593,6 +590,12 @@ persistence:
   ## @param persistence.dataSource Custom PVC data source
   ##
   dataSource: {}
+  ## @param persistence.mountPath The path the data volume will be mounted at
+  ##
+  mountPath: ""
+  ## @param persistence.subPath The subdirectory of the volume to mount to
+  ##
+  subPath: ""
   ## @param persistence.existingClaim The name of an existing PVC to use for persistence
   ##
   existingClaim: ""

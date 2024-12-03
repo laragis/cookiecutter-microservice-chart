@@ -44,7 +44,6 @@ To access your {{ cookiecutter.chart_title }} site from outside the cluster foll
    export NODE_PORT=$(kubectl get --namespace {{ "{{" }} .Release.Namespace {{ "}}" }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ "{{" }} include "common.names.fullname" . {{ "}}" }})
    export NODE_IP=$(kubectl get nodes --namespace {{ "{{" }} .Release.Namespace {{ "}}" }} -o jsonpath="{.items[0].status.addresses[0].address}")
    echo "{{ cookiecutter.chart_title }} URL: http://$NODE_IP:$NODE_PORT/"
-   echo "{{ cookiecutter.chart_title }} Admin URL: http://$NODE_IP:$NODE_PORT/admin"
 
 {{ "{{" }}- else if contains "LoadBalancer" .Values.service.type {{ "}}" }}
 
