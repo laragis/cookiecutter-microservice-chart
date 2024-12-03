@@ -814,7 +814,7 @@ networkPolicy:
   ## @param {{ cookiecutter.use_db }}.enabled Deploy a MariaDB server to satisfy the applications database requirements
   ## To use an external database set this to false and configure the `externalDatabase.*` parameters
   ##
-  enabled: true
+  enabled: false
   ## @param {{ cookiecutter.use_db }}.architecture MariaDB architecture. Allowed values: `standalone` or `replication`
   ##
   architecture: standalone
