@@ -322,6 +322,26 @@ containerSecurityContext:
     type: "RuntimeDefault"
 ## Configure extra options for {{ cookiecutter.chart_title }} containers' liveness, readiness and startup probes
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
+## @param startupProbe.enabled Enable startupProbe on {{ cookiecutter.chart_title }} containers
+## @skip startupProbe.httpGet
+## @param startupProbe.initialDelaySeconds Initial delay seconds for startupProbe
+## @param startupProbe.periodSeconds Period seconds for startupProbe
+## @param startupProbe.timeoutSeconds Timeout seconds for startupProbe
+## @param startupProbe.failureThreshold Failure threshold for startupProbe
+## @param startupProbe.successThreshold Success threshold for startupProbe
+## Example:
+## startupProbe:
+##   enabled: true
+##   tcpSocket:
+##     port: http
+##
+startupProbe:
+  enabled: false
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
 ## @param livenessProbe.enabled Enable livenessProbe on {{ cookiecutter.chart_title }} containers
 ## @skip livenessProbe.tcpSocket
 ## @param livenessProbe.initialDelaySeconds Initial delay seconds for livenessProbe
@@ -329,6 +349,11 @@ containerSecurityContext:
 ## @param livenessProbe.timeoutSeconds Timeout seconds for livenessProbe
 ## @param livenessProbe.failureThreshold Failure threshold for livenessProbe
 ## @param livenessProbe.successThreshold Success threshold for livenessProbe
+## Example:
+## livenessProbe:
+##   enabled: true
+##   tcpSocket:
+##     port: http
 ##
 livenessProbe:
   enabled: false
@@ -344,23 +369,14 @@ livenessProbe:
 ## @param readinessProbe.timeoutSeconds Timeout seconds for readinessProbe
 ## @param readinessProbe.failureThreshold Failure threshold for readinessProbe
 ## @param readinessProbe.successThreshold Success threshold for readinessProbe
+## Example:
+## readinessProbe:
+##   enabled: true
+##   httpGet:
+##     path: /
+##     port: http
 ##
 readinessProbe:
-  enabled: false
-  initialDelaySeconds: 30
-  periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 6
-  successThreshold: 1
-## @param startupProbe.enabled Enable startupProbe on {{ cookiecutter.chart_title }} containers
-## @skip startupProbe.httpGet
-## @param startupProbe.initialDelaySeconds Initial delay seconds for startupProbe
-## @param startupProbe.periodSeconds Period seconds for startupProbe
-## @param startupProbe.timeoutSeconds Timeout seconds for startupProbe
-## @param startupProbe.failureThreshold Failure threshold for startupProbe
-## @param startupProbe.successThreshold Success threshold for startupProbe
-##
-startupProbe:
   enabled: false
   initialDelaySeconds: 30
   periodSeconds: 10
