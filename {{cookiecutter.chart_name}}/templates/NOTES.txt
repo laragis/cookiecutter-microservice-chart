@@ -52,13 +52,11 @@ To access your {{ cookiecutter.chart_title }} site from outside the cluster foll
 
    export SERVICE_IP=$(kubectl get svc --namespace {{ "{{" }}  .Release.Namespace {{ "}}" }} {{ "{{" }} include "common.names.fullname" .{{ "}}" }} --template "{{ "{{" }} "{{ "{{" }} range (index .status.loadBalancer.ingress 0) {{ "}}" }}{{ "{{" }} . {{ "}}" }}{{ "{{" }} end {{ "}}" }}" {{ "}}" }}")
    echo "{{ cookiecutter.chart_title }} URL: http://$SERVICE_IP{{ "{{" }}- if ne $port "80" {{ "}}" }}:{{ "{{" }} .Values.service.ports.http {{ "}}" }}{{ "{{" }} end {{ "}}" }}/"
-   echo "{{ cookiecutter.chart_title }} Admin URL: http://$SERVICE_IP{{ "{{" }}- if ne $port "80" {{ "}}" }}:{{ "{{" }} .Values.service.ports.http {{ "}}" }}{{ "{{" }} end {{ "}}" }}/admin"
 
 {{ "{{" }}- else if contains "ClusterIP"  .Values.service.type {{ "}}" }}
 
    kubectl port-forward --namespace {{ "{{" }} .Release.Namespace {{ "}}" }} svc/{{ "{{" }} include "common.names.fullname" . {{ "}}" }} {{ "{{" }} .Values.service.ports.http {{ "}}" }}:{{ "{{" }} .Values.service.ports.http {{ "}}" }} &
    echo "{{ cookiecutter.chart_title }} URL: http://127.0.0.1{{ "{{" }}- if ne $port "80" {{ "}}" }}:{{ "{{" }} .Values.service.ports.http {{ "}}" }}{{ "{{" }} end {{ "}}" }}//"
-   echo "{{ cookiecutter.chart_title }} Admin URL: http://127.0.0.1{{ "{{" }}- if ne $port "80" {{ "}}" }}:{{ "{{" }} .Values.service.ports.http {{ "}}" }}{{ "{{" }} end {{ "}}" }}//admin"
 
 {{ "{{" }}- end {{ "}}" }}
 {{ "{{" }}- end {{ "}}" }}
