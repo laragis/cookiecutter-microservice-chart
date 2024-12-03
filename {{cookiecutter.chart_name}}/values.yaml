@@ -71,8 +71,8 @@ diagnosticMode:
 ## @section {{ cookiecutter.chart_title }} Image parameters
 ##
 
-## Bitnami {{ cookiecutter.chart_title }} image
-## ref: https://hub.docker.com/r/bitnami/{{ cookiecutter.image_name }}/tags/
+## {{ cookiecutter.organization }} {{ cookiecutter.chart_title }} image
+## ref: https://hub.docker.com/r/{{ cookiecutter.__organization_name }}/{{ cookiecutter.image_name }}/tags/
 ## @param image.registry [default: REGISTRY_NAME] {{ cookiecutter.chart_title }} image registry
 ## @param image.repository [default: REPOSITORY_NAME/{{ cookiecutter.image_name }}] {{ cookiecutter.chart_title }} image repository
 ## @skip image.tag {{ cookiecutter.image_name }} image tag (immutable tags are recommended)
@@ -827,33 +827,33 @@ networkPolicy:
 ## ref: https://github.com/bitnami/charts/blob/main/bitnami/{{ cookiecutter.use_db }}/values.yaml
 ##
 {{ cookiecutter.use_db }}:
-  ## @param {{ cookiecutter.use_db }}.enabled Deploy a MariaDB server to satisfy the applications database requirements
+  ## @param {{ cookiecutter.use_db }}.enabled Deploy a Database server to satisfy the applications database requirements
   ## To use an external database set this to false and configure the `externalDatabase.*` parameters
   ##
   enabled: false
-  ## @param {{ cookiecutter.use_db }}.architecture MariaDB architecture. Allowed values: `standalone` or `replication`
+  ## @param {{ cookiecutter.use_db }}.architecture Database architecture. Allowed values: `standalone` or `replication`
   ##
   architecture: standalone
-  ## MariaDB Authentication parameters
-  ## @param {{ cookiecutter.use_db }}.auth.rootPassword MariaDB root password
-  ## @param {{ cookiecutter.use_db }}.auth.database MariaDB custom database
-  ## @param {{ cookiecutter.use_db }}.auth.username MariaDB custom user name
-  ## @param {{ cookiecutter.use_db }}.auth.password MariaDB custom user password
-  ## ref: https://github.com/bitnami/containers/tree/main/bitnami/mariadb#setting-the-root-password-on-first-run
-  ##      https://github.com/bitnami/containers/blob/main/bitnami/mariadb/README.md#creating-a-database-on-first-run
-  ##      https://github.com/bitnami/containers/blob/main/bitnami/mariadb/README.md#creating-a-database-user-on-first-run
+  ## Database Authentication parameters
+  ## @param {{ cookiecutter.use_db }}.auth.rootPassword Database root password
+  ## @param {{ cookiecutter.use_db }}.auth.database Database custom database
+  ## @param {{ cookiecutter.use_db }}.auth.username Database custom user name
+  ## @param {{ cookiecutter.use_db }}.auth.password Database custom user password
+  ## ref: https://github.com/bitnami/containers/tree/main/bitnami/{{ cookiecutter.use_db }}#setting-the-root-password-on-first-run
+  ##      https://github.com/bitnami/containers/blob/main/bitnami/{{ cookiecutter.use_db }}/README.md#creating-a-database-on-first-run
+  ##      https://github.com/bitnami/containers/blob/main/bitnami/{{ cookiecutter.use_db }}/README.md#creating-a-database-user-on-first-run
   ##
   auth:
     rootPassword: ""
     database: postgres
     username: postgres
     password: ""
-  ## MariaDB Primary configuration
+  ## Database Primary configuration
   ##
   primary:
-    ## MariaDB Primary Persistence parameters
+    ## Database Primary Persistence parameters
     ## ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
-    ## @param {{ cookiecutter.use_db }}.primary.persistence.enabled Enable persistence on MariaDB using PVC(s)
+    ## @param {{ cookiecutter.use_db }}.primary.persistence.enabled Enable persistence on Database using PVC(s)
     ## @param {{ cookiecutter.use_db }}.primary.persistence.storageClass Persistent Volume storage class
     ## @param {{ cookiecutter.use_db }}.primary.persistence.accessModes [array] Persistent Volume access modes
     ## @param {{ cookiecutter.use_db }}.primary.persistence.size Persistent Volume size
@@ -864,7 +864,7 @@ networkPolicy:
       accessModes:
         - ReadWriteOnce
       size: 8Gi
-    ## MariaDB primary container's resource requests and limits
+    ## Database primary container's resource requests and limits
     ## ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
     ## We usually recommend not to specify default resources and to leave this as a conscious
     ## choice for the user. This also increases chances charts run on environments with little
@@ -905,7 +905,7 @@ externalDatabase:
   ##
   database: postgres
   ## @param externalDatabase.existingSecret The name of an existing secret with database credentials. Evaluated as a template
-  ## NOTE: Must contain key `mariadb-password`
+  ## NOTE: Must contain key `{{ cookiecutter.use_db }}-password`
   ## NOTE: When it's set, the `externalDatabase.password` parameter is ignored
   ##
   existingSecret: ""
