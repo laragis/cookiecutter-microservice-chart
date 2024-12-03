@@ -391,7 +391,7 @@ lifecycleHooks: {}
 service:
   ## @param service.type {{ cookiecutter.chart_title }} service type
   ##
-  type: LoadBalancer
+  type: CluserIP
   ## @param service.ports.http {{ cookiecutter.chart_title }} service HTTP port
   ## @param service.ports.https {{ cookiecutter.chart_title }} service HTTPS port
   ##
@@ -568,6 +568,12 @@ persistence:
   ## @param persistence.enabled Enable persistence using Persistent Volume Claims
   ##
   enabled: false
+  ## @param persistence.mountPath The path the data volume will be mounted at
+  ##
+  mountPath: ""
+  ## @param persistence.subPath The subdirectory of the volume to mount to
+  ##
+  subPath: ""
   ## @param persistence.storageClass Persistent Volume storage class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
