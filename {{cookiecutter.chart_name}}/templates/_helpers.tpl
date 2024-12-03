@@ -23,7 +23,7 @@ Return the proper image name (for the init container volume-permissions image)
 Return the proper Docker Image Registry Secret Names
 */{{ "}}" }}
 {{ "{{" }}- define "{{ cookiecutter.chart_name }}.imagePullSecrets" -{{ "}}" }}
-{{ "{{" }}- include "common.images.pullSecrets" (dict "images" (list .Values.image .Values.metrics.image .Values.volumePermissions.image) "global" .Values.global) -{{ "}}" }}
+{{ "{{" }}- include "common.images.pullSecrets" (dict "images" (list .Values.image .Values.volumePermissions.image) "global" .Values.global) -{{ "}}" }}
 {{ "{{" }}- end -{{ "}}" }}
 
 {{ "{{" }}/*
@@ -126,7 +126,7 @@ Return the Database password secret key
 {{ "{{" }}- end -{{ "}}" }}
 {{ "{{" }}- end -{{ "}}" }}
 
-{%- if cookiecutter.use_cache == "postgresql" %}
+{%- if cookiecutter.use_db == "postgresql" %}
 {{ "{{" }}/*
 Return the Database password secret key
 */{{ "}}" }}
@@ -142,6 +142,15 @@ Return the Database password secret key
 {{ "{{" }}- end -{{ "}}" }}
 {{ "{{" }}- end -{{ "}}" }}
 {% endif -%}
+
+{{ "{{" }}/*
+Return whether Database uses password authentication or not
+*/{{ "}}" }}
+{{ "{{" }}- define "{{ cookiecutter.chart_name }}.database.auth.enabled" -{{ "}}" }}
+{{ "{{" }}- if or (and .Values.{{ cookiecutter.use_db }}.enabled .Values.{{ cookiecutter.use_db }}.auth.enabled) (and (not .Values.{{ cookiecutter.use_db }}.enabled) (or .Values.externalDatabase.password .Values.externalDatabase.existingSecret)) {{ "}}" }}
+    {{ "{{" }}- true -{{ "}}" }}
+{{ "{{" }}- end -{{ "}}" }}
+{{ "{{" }}- end -{{ "}}" }}
 {% endif -%}
 
 {%- if cookiecutter.use_cache %}

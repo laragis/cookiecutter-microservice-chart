@@ -51,7 +51,7 @@ To access your {{ cookiecutter.chart_title }} site from outside the cluster foll
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         Watch the status with: 'kubectl get svc --namespace {{ "{{" }} .Release.Namespace {{ "}}" }} -w {{ "{{" }} include "common.names.fullname" . {{ "}}" }}'
 
-   export SERVICE_IP=$(kubectl get svc --namespace {{ "{{" }} .Release.Namespace {{ "}}" }} {{ "{{" }} include "common.names.fullname" . {{ "}}" }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) {{ "}}" }}{{ "{{" }} . {{ "}}" }}{{ "{{" }} end {{ "}}" }}" {{ "}}" }}")
+   export SERVICE_IP=$(kubectl get svc --namespace {{ "{{" }}  .Release.Namespace {{ "}}" }} {{ "{{" }} include "common.names.fullname" .{{ "}}" }} --template "{{ "{{" }} "{{ "{{" }} range (index .status.loadBalancer.ingress 0) {{ "}}" }}{{ "{{" }} . {{ "}}" }}{{ "{{" }} end {{ "}}" }}" {{ "}}" }}")
    echo "{{ cookiecutter.chart_title }} URL: http://$SERVICE_IP{{ "{{" }}- if ne $port "80" {{ "}}" }}:{{ "{{" }} .Values.service.ports.http {{ "}}" }}{{ "{{" }} end {{ "}}" }}/"
    echo "{{ cookiecutter.chart_title }} Admin URL: http://$SERVICE_IP{{ "{{" }}- if ne $port "80" {{ "}}" }}:{{ "{{" }} .Values.service.ports.http {{ "}}" }}{{ "{{" }} end {{ "}}" }}/admin"
 
@@ -69,7 +69,6 @@ To access your {{ cookiecutter.chart_title }} site from outside the cluster foll
 {{ "{{" }}- end {{ "}}" }}
 
 {{ "{{" }}- include "common.warnings.rollingTag" .Values.image {{ "}}" }}
-{{ "{{" }}- include "common.warnings.rollingTag" .Values.metrics.image {{ "}}" }}
 {{ "{{" }}- include "common.warnings.rollingTag" .Values.volumePermissions.image {{ "}}" }}
 {{ "{{" }}- include "common.warnings.resources" (dict "sections" (list "" "volumePermissions") "context" $) {{ "}}" }}
 {{ "{{" }}- include "common.warnings.modifiedImages" (dict "images" (list .Values.image .Values.volumePermissions.image) "context" $) {{ "}}" }}

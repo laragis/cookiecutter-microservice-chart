@@ -1,14 +1,14 @@
 {
   "chart_title": "Microservice",
   "chart_name": "{{ cookiecutter.chart_title.lower()|replace(' ', '-')|replace('.', '-')|trim() }}",
-  "description": "Helm chart Boilerplate contains all the boilerplate you need to create a Helm chart.",
+  "chart_description": "Helm chart Boilerplate contains all the boilerplate you need to create a Helm chart.",
   "chart_version": "0.1.0",
-  "app_version": "0.1.0",
-  "image_registry": "docker.io",
   "organization": "LaraGIS",
   "__organization_name": "{{ cookiecutter.organization | lower }}",
+  "app_version": "0.1.0",
+  "image_registry": "docker.io",
   "image_name": "{{ cookiecutter.chart_name }}",
-  "image_tag": "0.1.0",
+  "image_tag": "{{ cookiecutter.app_version }}",
   "author_name": "Truong Thanh Tung",
   "use_workload": [
     "deployment",

@@ -50,6 +50,8 @@ def main():
     remove_hpa_files()
     remove_vpa_files()
 
+  print(SUCCESS + "Chart initialized, keep up the good work!" + TERMINATOR)
+
   # Workload
   remove_workload_files("{{ cookiecutter.use_workload }}")
 

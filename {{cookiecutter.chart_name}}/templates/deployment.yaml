@@ -26,11 +26,10 @@ spec:
     metadata:
       labels: {{ "{{" }}- include "common.labels.standard" ( dict "customLabels" $podLabels "context" $ ) | nindent 8 {{ "}}" }}
       annotations:
-        checksum/config: {{ "{{" }} include (print $.Template.BasePath "/configmap.yaml") . | sha256sum {{ "}}" }}
         {%- if cookiecutter.use_db != "none" %}
         checksum/secret-database: {{ "{{" }} include (print $.Template.BasePath "/secret-database.yaml") . | sha256sum {{ "}}" }}
         {% endif -%}
-        {%- if cookiecutter.use_cache %}
+        {%- if cookiecutter.use_cache -%}
         checksum/secret-redis: {{ "{{" }} include (print $.Template.BasePath "/secret-redis.yaml") . | sha256sum {{ "}}" }}
         {% endif -%}
         {{ "{{" }}- if .Values.podAnnotations {{ "}}" }}
@@ -132,22 +131,24 @@ spec:
             - name: DB_HOST
               value: {{ "{{" }} include "{{ cookiecutter.chart_name }}.database.host" . {{ "}}" }}
             - name: DB_PORT
-              value: {{ "{{" }} include "{{ cookiecutter.chart_name }}.database.port" . {{ "}}" }}
+              value: {{ "{{" }} include "{{ cookiecutter.chart_name }}.database.port" . | quote {{ "}}" }}
             - name: DB_DATABASE
               value: {{ "{{" }} include "{{ cookiecutter.chart_name }}.database.name" . {{ "}}" }}
             - name: DB_USERNAME
               value: {{ "{{" }} include "{{ cookiecutter.chart_name }}.database.user" . {{ "}}" }}
+            {{ "{{" }}- if (include "{{ cookiecutter.chart_name }}.database.auth.enabled" .) {{ "}}" }}
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ "{{" }} include "{{ cookiecutter.chart_name }}.database.secretName" . {{ "}}" }}
                   key: {{ "{{" }} include "{{ cookiecutter.chart_name }}.database.secretPasswordKey" . {{ "}}" }}
+            {{ "{{" }}- end }}
             {% endif -%}
             {% if cookiecutter.use_cache -%}
             - name: REDIS_HOST
               value: {{ "{{" }} include "{{ cookiecutter.chart_name }}.redis.host" . {{ "}}" }}
             - name: REDIS_PORT
-              value: {{ "{{" }} include "{{ cookiecutter.chart_name }}.redis.port" . {{ "}}" }}
+              value: {{ "{{" }} include "{{ cookiecutter.chart_name }}.redis.port" . | quote {{ "}}" }}
             {{ "{{" }}- if (include "{{ cookiecutter.chart_name }}.redis.auth.enabled" .) {{ "}}" }}
             - name: REDIS_PASSWORD
               valueFrom:
@@ -202,9 +203,11 @@ spec:
           resources: {{ "{{" }}- include "common.resources.preset" (dict "type" .Values.resourcesPreset) | nindent 12 {{ "}}" }}
           {{ "{{" }}- end {{ "}}" }}
           volumeMounts:
+            {{ "{{" }}- if .Values.persistence.mountPath {{ "}}" }}
             - name: data
               mountPath: {{ "{{" }} .Values.persistence.mountPath {{ "}}" }}
               subPath: {{ "{{" }} .Values.persistence.subPath {{ "}}" }}
+            {{ "{{" }}- end {{ "}}" }}
             {{ "{{" }}- if .Values.extraVolumeMounts {{ "}}" }}
             {{ "{{" }}- include "common.tplvalues.render" (dict "value" .Values.extraVolumeMounts "context" $) | nindent 12 {{ "}}" }}
             {{ "{{" }}- end {{ "}}" }}

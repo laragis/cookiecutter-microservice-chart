@@ -16,17 +16,17 @@ dependencies:
 - condition: postgresql.enabled
   name: postgresql
   repository: oci://registry-1.docker.io/bitnamicharts
-  version: 20.x.x
+  version: 16.x.x
 {% elif cookiecutter.use_db == 'mariadb' %}
 - condition: mariadb.enabled
   name: mariadb
   repository: oci://registry-1.docker.io/bitnamicharts
   version: 20.x.x
 {% elif cookiecutter.use_db == 'mysql' %}
-- condition: mariadb.enabled
-  name: mariadb
+- condition: mysql.enabled
+  name: mysql
   repository: oci://registry-1.docker.io/bitnamicharts
-  version: 20.x.x
+  version: 12.x.x
 {% endif -%}
 {% if cookiecutter.use_cache -%}
 - condition: redis.enabled
@@ -39,7 +39,7 @@ dependencies:
   tags:
   - bitnami-common
   version: 2.x.x
-description: {{ cookiecutter.description }}
+description: {{ cookiecutter.chart_description }}
 home: https://laragis.vn
 icon: https://laragis.vn/assets/stacks/{{cookiecutter.image_name}}/img/{{cookiecutter.image_name}}-stack-220x234.png
 keywords:
