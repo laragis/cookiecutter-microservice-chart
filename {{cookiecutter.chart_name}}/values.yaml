@@ -101,9 +101,6 @@ image:
   ## Enable debug mode
   ##
   debug: false
-## @param enableHttps Configure to build application URLs using https
-##
-enableHttps: false
 
 ## @section {{ cookiecutter.image_name }} Configuration parameters
 ## {{ cookiecutter.image_name }} settings based on environment variables
@@ -269,10 +266,13 @@ resources: {}
 ## Container ports
 ## @param containerPorts.http {{ cookiecutter.chart_title }} HTTP container port
 ## @param containerPorts.https {{ cookiecutter.chart_title }} HTTPS container port
+## Example:
+## containerPorts:
+##   http: 80
+##   https: 443
 ##
 containerPorts:
   http: 80
-  https: 443
 ## @param extraContainerPorts Optionally specify extra list of additional ports for {{ cookiecutter.chart_title }} container(s)
 ## e.g:
 ## extraContainerPorts:
@@ -390,11 +390,9 @@ service:
   ##
   type: ClusterIP
   ## @param service.ports.http {{ cookiecutter.chart_title }} service HTTP port
-  ## @param service.ports.https {{ cookiecutter.chart_title }} service HTTPS port
   ##
   ports:
     http: 80
-    https: 443
   ## @param service.httpsTargetPort Target port for HTTPS
   ##
   httpsTargetPort: https
@@ -405,7 +403,6 @@ service:
   ##
   nodePorts:
     http: ""
-    https: ""
   ## @param service.sessionAffinity Control where client requests go, to the same pod or round-robin
   ## Values: ClientIP or None
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/

@@ -170,9 +170,11 @@ spec:
                 name: {{ "{{" }} include "common.tplvalues.render" (dict "value" .Values.extraEnvVarsSecret "context" $) {{ "}}" }}
             {{ "{{" }}- end {{ "}}" }}
           ports:
+            {{ "{{" }}- if .Values.containerPorts.http {{ "}}" }}
             - name: http
               containerPort: {{ "{{" }} .Values.containerPorts.http {{ "}}" }}
-            {{ "{{" }}- if .Values.enableHttps {{ "}}" }}
+            {{ "{{" }}- end {{ "}}" }}
+            {{ "{{" }}- if .Values.containerPorts.https {{ "}}" }}
             - name: https
               containerPort: {{ "{{" }} .Values.containerPorts.https {{ "}}" }}
             {{ "{{" }}- end {{ "}}" }}
