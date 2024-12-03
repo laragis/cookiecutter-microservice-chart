@@ -101,7 +101,7 @@ image:
   ## Enable debug mode
   ##
   debug: false
-## @param enableHttps Configure Ghost to build application URLs using https
+## @param enableHttps Configure to build application URLs using https
 ##
 enableHttps: false
 
