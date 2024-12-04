@@ -1,17 +1,17 @@
-<!--- app-name: {{ cookiecutter.chart_title }} -->
+<!--- app-name: {! cookiecutter.chart_title !} -->
 
-# {{ cookiecutter.organization }} package for {{ cookiecutter.chart_title }}
+# {! cookiecutter.organization !} package for {! cookiecutter.chart_title !}
 
 ## TL;DR
 
 ```console
-helm install my-release oci://registry-1.docker.io/{{ cookiecutter.__organization_name }}/{{ cookiecutter.chart_name }}
+helm install my-release oci://registry-1.docker.io/{! cookiecutter.__organization_name !}/{! cookiecutter.chart_name !}
 ```
 
 ## Introduction
 
-This chart bootstraps a [{{ cookiecutter.chart_title }}](https://github.com/{{ cookiecutter.__organization_name
-}}/containers/tree/main/{{ cookiecutter.__organization_name }}/{{ cookiecutter.image_name }}) deployment on
+This chart bootstraps a [{! cookiecutter.chart_title !}](https://github.com/{! cookiecutter.__organization_name !}/containers/tree/main/{! cookiecutter.__organization_name !}/{! cookiecutter.image_name !})
+deployment on
 a [Kubernetes](https://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
@@ -26,15 +26,15 @@ a [Kubernetes](https://kubernetes.io) cluster using the [Helm](https://helm.sh) 
 To install the chart with the release name `my-release`:
 
 ```console
-helm install my-release oci://REGISTRY_NAME/REPOSITORY_NAME/{{ cookiecutter.chart_name }}
+helm install my-release oci://REGISTRY_NAME/REPOSITORY_NAME/{! cookiecutter.chart_name !}
 ```
 
 > Note: You need to substitute the placeholders `REGISTRY_NAME` and `REPOSITORY_NAME` with a reference to your Helm
-> chart registry and repository. For example, in the case of {{ cookiecutter.organization }}, you need to
+> chart registry and repository. For example, in the case of {! cookiecutter.organization !}, you need to
 > use `REGISTRY_NAME=registry-1.docker.io`
-> and `REPOSITORY_NAME={{ cookiecutter.__organization_name }}`.
+> and `REPOSITORY_NAME={! cookiecutter.__organization_name !}`.
 
-The command deploys {{ cookiecutter.chart_title }} on the Kubernetes cluster in the default configuration.
+The command deploys {! cookiecutter.chart_title !} on the Kubernetes cluster in the default configuration.
 The [Parameters](#parameters) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
@@ -43,7 +43,7 @@ The [Parameters](#parameters) section lists the parameters that can be configure
 
 ### Resource requests and limits
 
-{{ cookiecutter.organization }} charts allow setting resource requests and limits for all containers inside the chart
+{! cookiecutter.organization !} charts allow setting resource requests and limits for all containers inside the chart
 deployment. These are
 inside the `resources` value (check parameter table). Setting requests is essential for production workloads and these
 should be adapted to your specific use case.
@@ -60,23 +60,24 @@ the [official Kubernetes documentation](https://kubernetes.io/docs/concepts/conf
 It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not
 change automatically if the same tag is updated with a different image.
 
-{{ cookiecutter.organization }} will release a new chart updating its containers if a new version of the main container,
+{! cookiecutter.organization !} will release a new chart updating its containers if a new version of the main container,
 significant changes, or
 critical vulnerabilities exist.
 
 ### Known limitations
 
 {%- if cookiecutter.use_db != "none" %}
+
 ### External database support
 
-You may want to have {{ cookiecutter.chart_title }} connect to an external database rather than installing one inside
+You may want to have {! cookiecutter.chart_title !} connect to an external database rather than installing one inside
 your cluster. Typical reasons for this are to use a managed database service, or to share a common database server for
 all your applications. To achieve this, the chart allows you to specify credentials for an external database with
 the [`externalDatabase` parameter](#database-parameters). You should also disable the MariaDB installation with
-the `{{ cookiecutter.chart_name }}.enabled` option. Here is an example:
+the `{! cookiecutter.chart_name !}.enabled` option. Here is an example:
 
 ```console
-{{ cookiecutter.use_db }}.enabled=false
+{! cookiecutter.use_db !}.enabled=false
 externalDatabase.host=myexternalhost
 externalDatabase.user=myuser
 externalDatabase.password=mypassword
@@ -84,16 +85,15 @@ externalDatabase.database=mydatabase
 externalDatabase.port=3306
 ```
 
-If the database already contains data from a previous {{ cookiecutter.chart_title }} installation, set
-the `{{ cookiecutter.chart_name }}SkipInstall` parameter to `true`. This parameter forces the container to skip the {{
-cookiecutter.chart_title }} installation wizard. Otherwise, the container will assume it is a fresh installation and
+If the database already contains data from a previous {! cookiecutter.chart_title !} installation, set
+the `{! cookiecutter.chart_name !}SkipInstall` parameter to `true`. This parameter forces the container to skip the {!cookiecutter.chart_title !} installation wizard. Otherwise, the container will assume it is a fresh installation and
 execute the installation wizard, potentially modifying or resetting the data in the existing database.
 
-[Refer to the container documentation for more information](https://github.com/bitnami/containers/tree/main/bitnami/{{
-cookiecutter.chart_name }}#connect-{{ cookiecutter.chart_name }}-container-to-an-existing-database).
+[Refer to the container documentation for more information](https://github.com/bitnami/containers/tree/main/bitnami/{!cookiecutter.chart_name !}#connect-{! cookiecutter.chart_name !}-container-to-an-existing-database).
 {% endif -%}
 
 {% if cookiecutter.use_cache %}
+
 ### Redis
 
 This chart provides support for using Redis to cache database queries and objects improving the website performance.
@@ -109,6 +109,7 @@ redis.enabled=false
 externalCache.host=myexternalcachehost
 externalCache.port=11211
 ```
+
 {%- endif %}
 
 ### Ingress
@@ -185,9 +186,8 @@ wrj2wDbCDCFmfqnSJ+dKI3vFLlEz44sAV8jX/kd4Y6ZTQhlLbYc=
 
 ## Persistence
 
-The [{{ cookiecutter.organization }} {{ cookiecutter.chart_title }}](https://github.com/{{ cookiecutter.__organization_name }}/containers/tree/main/{{
-cookiecutter.__organization_name }}/{{ cookiecutter.chart_name }}) image
-stores the {{ cookiecutter.chart_title }} data and configurations at the `/bitnami` path of the container. Persistent
+The [{! cookiecutter.organization !} {! cookiecutter.chart_title !}](https://github.com/{! cookiecutter.__organization_name !}/containers/tree/main/{! cookiecutter.__organization_name !}/{! cookiecutter.chart_name !}) image
+stores the {! cookiecutter.chart_title !} data and configurations at the `/bitnami` path of the container. Persistent
 Volume Claims are used to keep the data across deployments.
 
 If you encounter errors when working with persistent volumes, refer to
@@ -199,7 +199,7 @@ In case you want to add extra environment variables (useful for advanced operati
 use the `extraEnvVars` property.
 
 ```yaml
-{ { cookiecutter.chart_name } }:
+{! cookiecutter.chart_name !}:
 extraEnvVars:
   - name: LOG_LEVEL
     value: error
@@ -210,7 +210,7 @@ the `extraEnvVarsSecret` values.
 
 ### Sidecars
 
-If additional containers are needed in the same pod as {{ cookiecutter.chart_title }} (such as additional metrics or
+If additional containers are needed in the same pod as {! cookiecutter.chart_title !} (such as additional metrics or
 logging exporters), they can be defined using the `sidecars` parameter.
 
 ```yaml
@@ -289,45 +289,45 @@ the `podAffinityPreset`, `podAntiAffinityPreset`, or `nodeAffinityPreset` parame
 | `diagnosticMode.command` | Command to override all containers in the deployment                                         | `["sleep"]`     |
 | `diagnosticMode.args`    | Args to override all containers in the deployment                                            | `["infinity"]`  |
 
-### {{ cookiecutter.chart_title }} Image parameters
+### {! cookiecutter.chart_title !} Image parameters
 
 | Name                | Description                                                                                                                    | Value                                           |
 |---------------------|--------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------|
-| `image.registry`    | {{ cookiecutter.chart_title }} image registry                                                                                  | `REGISTRY_NAME`                                 |
-| `image.repository`  | {{ cookiecutter.chart_title }} image repository                                                                                | `REPOSITORY_NAME/{{ cookiecutter.chart_name }}` |
-| `image.digest`      | {{ cookiecutter.chart_title }} image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag | `""`                                            |
-| `image.pullPolicy`  | {{ cookiecutter.chart_title }} image pull policy                                                                               | `IfNotPresent`                                  |
-| `image.pullSecrets` | {{ cookiecutter.chart_title }} image pull secrets                                                                              | `[]`                                            |
+| `image.registry`    | {! cookiecutter.chart_title !} image registry                                                                                  | `REGISTRY_NAME`                                 |
+| `image.repository`  | {! cookiecutter.chart_title !} image repository                                                                                | `REPOSITORY_NAME/{! cookiecutter.chart_name !}` |
+| `image.digest`      | {! cookiecutter.chart_title !} image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag | `""`                                            |
+| `image.pullPolicy`  | {! cookiecutter.chart_title !} image pull policy                                                                               | `IfNotPresent`                                  |
+| `image.pullSecrets` | {! cookiecutter.chart_title !} image pull secrets                                                                              | `[]`                                            |
 | `image.debug`       | Specify if debug values should be set                                                                                          | `false`                                         |
 
-### {{ cookiecutter.chart_title }} Configuration parameters
+### {! cookiecutter.chart_title !} Configuration parameters
 
-| Name                                              | Description                                                                                                       | Value              |
-|---------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|--------------------|
-| `command`                                         | Override default container command (useful when using custom images)                                              | `[]`               |
-| `args`                                            | Override default container args (useful when using custom images)                                                 | `[]`               |
-| `extraEnvVars`                                    | Array with extra environment variables to add to the {{ cookiecutter.chart_title }} container                     | `[]`               |
-| `extraEnvVarsCM`                                  | Name of existing ConfigMap containing extra env vars                                                              | `""`               |
-| `extraEnvVarsSecret`                              | Name of existing Secret containing extra env vars                                                                 | `""`               |
+| Name                 | Description                                                                                   | Value |
+|----------------------|-----------------------------------------------------------------------------------------------|-------|
+| `command`            | Override default container command (useful when using custom images)                          | `[]`  |
+| `args`               | Override default container args (useful when using custom images)                             | `[]`  |
+| `extraEnvVars`       | Array with extra environment variables to add to the {! cookiecutter.chart_title !} container | `[]`  |
+| `extraEnvVarsCM`     | Name of existing ConfigMap containing extra env vars                                          | `""`  |
+| `extraEnvVarsSecret` | Name of existing Secret containing extra env vars                                             | `""`  |
 
-### {{ cookiecutter.chart_title }} deployment parameters
+### {! cookiecutter.chart_title !} deployment parameters
 
 | Name                                                | Description                                                                                                                                                                                                       | Value            |
 |-----------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------|
-| `replicaCount`                                      | Number of {{ cookiecutter.chart_title }} replicas to deploy                                                                                                                                                       | `1`              |
-| `updateStrategy.type`                               | {{ cookiecutter.chart_title }} deployment strategy type                                                                                                                                                           | `RollingUpdate`  |
+| `replicaCount`                                      | Number of {! cookiecutter.chart_title !} replicas to deploy                                                                                                                                                       | `1`              |
+| `updateStrategy.type`                               | {! cookiecutter.chart_title !} deployment strategy type                                                                                                                                                           | `RollingUpdate`  |
 | `schedulerName`                                     | Alternate scheduler                                                                                                                                                                                               | `""`             |
-| `terminationGracePeriodSeconds`                     | In seconds, time given to the {{ cookiecutter.chart_title }} pod to terminate gracefully                                                                                                                          | `""`             |
+| `terminationGracePeriodSeconds`                     | In seconds, time given to the {! cookiecutter.chart_title !} pod to terminate gracefully                                                                                                                          | `""`             |
 | `topologySpreadConstraints`                         | Topology Spread Constraints for pod assignment spread across your cluster among failure-domains. Evaluated as a template                                                                                          | `[]`             |
-| `priorityClassName`                                 | Name of the existing priority class to be used by {{ cookiecutter.chart_title }} pods, priority class needs to be created beforehand                                                                              | `""`             |
+| `priorityClassName`                                 | Name of the existing priority class to be used by {! cookiecutter.chart_title !} pods, priority class needs to be created beforehand                                                                              | `""`             |
 | `automountServiceAccountToken`                      | Mount Service Account token in pod                                                                                                                                                                                | `false`          |
-| `hostAliases`                                       | {{ cookiecutter.chart_title }} pod host aliases                                                                                                                                                                   | `[]`             |
-| `extraVolumes`                                      | Optionally specify extra list of additional volumes for {{ cookiecutter.chart_title }} pods                                                                                                                       | `[]`             |
-| `extraVolumeMounts`                                 | Optionally specify extra list of additional volumeMounts for {{ cookiecutter.chart_title }} container(s)                                                                                                          | `[]`             |
-| `sidecars`                                          | Add additional sidecar containers to the {{ cookiecutter.chart_title }} pod                                                                                                                                       | `[]`             |
-| `initContainers`                                    | Add additional init containers to the {{ cookiecutter.chart_title }} pods                                                                                                                                         | `[]`             |
-| `podLabels`                                         | Extra labels for {{ cookiecutter.chart_title }} pods                                                                                                                                                              | `{}`             |
-| `podAnnotations`                                    | Annotations for {{ cookiecutter.chart_title }} pods                                                                                                                                                               | `{}`             |
+| `hostAliases`                                       | {! cookiecutter.chart_title !} pod host aliases                                                                                                                                                                   | `[]`             |
+| `extraVolumes`                                      | Optionally specify extra list of additional volumes for {! cookiecutter.chart_title !} pods                                                                                                                       | `[]`             |
+| `extraVolumeMounts`                                 | Optionally specify extra list of additional volumeMounts for {! cookiecutter.chart_title !} container(s)                                                                                                          | `[]`             |
+| `sidecars`                                          | Add additional sidecar containers to the {! cookiecutter.chart_title !} pod                                                                                                                                       | `[]`             |
+| `initContainers`                                    | Add additional init containers to the {! cookiecutter.chart_title !} pods                                                                                                                                         | `[]`             |
+| `podLabels`                                         | Extra labels for {! cookiecutter.chart_title !} pods                                                                                                                                                              | `{}`             |
+| `podAnnotations`                                    | Annotations for {! cookiecutter.chart_title !} pods                                                                                                                                                               | `{}`             |
 | `podAffinityPreset`                                 | Pod affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`                                                                                                                               | `""`             |
 | `podAntiAffinityPreset`                             | Pod anti-affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`                                                                                                                          | `soft`           |
 | `nodeAffinityPreset.type`                           | Node affinity preset type. Ignored if `affinity` is set. Allowed values: `soft` or `hard`                                                                                                                         | `""`             |
@@ -338,14 +338,14 @@ the `podAffinityPreset`, `podAntiAffinityPreset`, or `nodeAffinityPreset` parame
 | `tolerations`                                       | Tolerations for pod assignment                                                                                                                                                                                    | `[]`             |
 | `resourcesPreset`                                   | Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if resources is set (resources is recommended for production). | `micro`          |
 | `resources`                                         | Set container requests and limits for different resources like CPU or memory (essential for production workloads)                                                                                                 | `{}`             |
-| `containerPorts.http`                               | {{ cookiecutter.chart_title }} HTTP container port                                                                                                                                                                | `8080`           |
-| `containerPorts.https`                              | {{ cookiecutter.chart_title }} HTTPS container port                                                                                                                                                               | `8443`           |
-| `extraContainerPorts`                               | Optionally specify extra list of additional ports for {{ cookiecutter.chart_title }} container(s)                                                                                                                 | `[]`             |
-| `podSecurityContext.enabled`                        | Enabled {{ cookiecutter.chart_title }} pods' Security Context                                                                                                                                                     | `true`           |
+| `containerPorts.http`                               | {! cookiecutter.chart_title !} HTTP container port                                                                                                                                                                | `8080`           |
+| `containerPorts.https`                              | {! cookiecutter.chart_title !} HTTPS container port                                                                                                                                                               | `8443`           |
+| `extraContainerPorts`                               | Optionally specify extra list of additional ports for {! cookiecutter.chart_title !} container(s)                                                                                                                 | `[]`             |
+| `podSecurityContext.enabled`                        | Enabled {! cookiecutter.chart_title !} pods' Security Context                                                                                                                                                     | `true`           |
 | `podSecurityContext.fsGroupChangePolicy`            | Set filesystem group change policy                                                                                                                                                                                | `Always`         |
 | `podSecurityContext.sysctls`                        | Set kernel settings using the sysctl interface                                                                                                                                                                    | `[]`             |
 | `podSecurityContext.supplementalGroups`             | Set filesystem extra groups                                                                                                                                                                                       | `[]`             |
-| `podSecurityContext.fsGroup`                        | Set {{ cookiecutter.chart_title }} pod's Security Context fsGroup                                                                                                                                                 | `1001`           |
+| `podSecurityContext.fsGroup`                        | Set {! cookiecutter.chart_title !} pod's Security Context fsGroup                                                                                                                                                 | `1001`           |
 | `containerSecurityContext.enabled`                  | Enabled containers' Security Context                                                                                                                                                                              | `true`           |
 | `containerSecurityContext.seLinuxOptions`           | Set SELinux options in container                                                                                                                                                                                  | `{}`             |
 | `containerSecurityContext.runAsUser`                | Set containers' Security Context runAsUser                                                                                                                                                                        | `1001`           |
@@ -356,19 +356,19 @@ the `podAffinityPreset`, `podAntiAffinityPreset`, or `nodeAffinityPreset` parame
 | `containerSecurityContext.allowPrivilegeEscalation` | Set container's Security Context allowPrivilegeEscalation                                                                                                                                                         | `false`          |
 | `containerSecurityContext.capabilities.drop`        | List of capabilities to be dropped                                                                                                                                                                                | `["ALL"]`        |
 | `containerSecurityContext.seccompProfile.type`      | Set container's Security Context seccomp profile                                                                                                                                                                  | `RuntimeDefault` |
-| `livenessProbe.enabled`                             | Enable livenessProbe on {{ cookiecutter.chart_title }} containers                                                                                                                                                 | `true`           |
+| `livenessProbe.enabled`                             | Enable livenessProbe on {! cookiecutter.chart_title !} containers                                                                                                                                                 | `true`           |
 | `livenessProbe.initialDelaySeconds`                 | Initial delay seconds for livenessProbe                                                                                                                                                                           | `120`            |
 | `livenessProbe.periodSeconds`                       | Period seconds for livenessProbe                                                                                                                                                                                  | `10`             |
 | `livenessProbe.timeoutSeconds`                      | Timeout seconds for livenessProbe                                                                                                                                                                                 | `5`              |
 | `livenessProbe.failureThreshold`                    | Failure threshold for livenessProbe                                                                                                                                                                               | `6`              |
 | `livenessProbe.successThreshold`                    | Success threshold for livenessProbe                                                                                                                                                                               | `1`              |
-| `readinessProbe.enabled`                            | Enable readinessProbe on {{ cookiecutter.chart_title }} containers                                                                                                                                                | `true`           |
+| `readinessProbe.enabled`                            | Enable readinessProbe on {! cookiecutter.chart_title !} containers                                                                                                                                                | `true`           |
 | `readinessProbe.initialDelaySeconds`                | Initial delay seconds for readinessProbe                                                                                                                                                                          | `30`             |
 | `readinessProbe.periodSeconds`                      | Period seconds for readinessProbe                                                                                                                                                                                 | `10`             |
 | `readinessProbe.timeoutSeconds`                     | Timeout seconds for readinessProbe                                                                                                                                                                                | `5`              |
 | `readinessProbe.failureThreshold`                   | Failure threshold for readinessProbe                                                                                                                                                                              | `6`              |
 | `readinessProbe.successThreshold`                   | Success threshold for readinessProbe                                                                                                                                                                              | `1`              |
-| `startupProbe.enabled`                              | Enable startupProbe on {{ cookiecutter.chart_title }} containers                                                                                                                                                  | `false`          |
+| `startupProbe.enabled`                              | Enable startupProbe on {! cookiecutter.chart_title !} containers                                                                                                                                                  | `false`          |
 | `startupProbe.initialDelaySeconds`                  | Initial delay seconds for startupProbe                                                                                                                                                                            | `30`             |
 | `startupProbe.periodSeconds`                        | Period seconds for startupProbe                                                                                                                                                                                   | `10`             |
 | `startupProbe.timeoutSeconds`                       | Timeout seconds for startupProbe                                                                                                                                                                                  | `5`              |
@@ -377,41 +377,41 @@ the `podAffinityPreset`, `podAntiAffinityPreset`, or `nodeAffinityPreset` parame
 | `customLivenessProbe`                               | Custom livenessProbe that overrides the default one                                                                                                                                                               | `{}`             |
 | `customReadinessProbe`                              | Custom readinessProbe that overrides the default one                                                                                                                                                              | `{}`             |
 | `customStartupProbe`                                | Custom startupProbe that overrides the default one                                                                                                                                                                | `{}`             |
-| `lifecycleHooks`                                    | for the {{ cookiecutter.chart_title }} container(s) to automate configuration before or after startup                                                                                                             | `{}`             |
+| `lifecycleHooks`                                    | for the {! cookiecutter.chart_title !} container(s) to automate configuration before or after startup                                                                                                             | `{}`             |
 
 ### Traffic Exposure Parameters
 
-| Name                                | Description                                                                                                                                              | Value                                 |
-|-------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------|
-| `service.type`                      | {{ cookiecutter.chart_title }} service type                                                                                                              | `LoadBalancer`                        |
-| `service.ports.http`                | {{ cookiecutter.chart_title }} service HTTP port                                                                                                         | `80`                                  |
-| `service.ports.https`               | {{ cookiecutter.chart_title }} service HTTPS port                                                                                                        | `443`                                 |
-| `service.httpsTargetPort`           | Target port for HTTPS                                                                                                                                    | `https`                               |
-| `service.nodePorts.http`            | Node port for HTTP                                                                                                                                       | `""`                                  |
-| `service.nodePorts.https`           | Node port for HTTPS                                                                                                                                      | `""`                                  |
-| `service.sessionAffinity`           | Control where client requests go, to the same pod or round-robin                                                                                         | `None`                                |
-| `service.sessionAffinityConfig`     | Additional settings for the sessionAffinity                                                                                                              | `{}`                                  |
-| `service.clusterIP`                 | {{ cookiecutter.chart_title }} service Cluster IP                                                                                                        | `""`                                  |
-| `service.loadBalancerIP`            | {{ cookiecutter.chart_title }} service Load Balancer IP                                                                                                  | `""`                                  |
-| `service.loadBalancerSourceRanges`  | {{ cookiecutter.chart_title }} service Load Balancer sources                                                                                             | `[]`                                  |
-| `service.externalTrafficPolicy`     | {{ cookiecutter.chart_title }} service external traffic policy                                                                                           | `Cluster`                             |
-| `service.annotations`               | Additional custom annotations for {{ cookiecutter.chart_title }} service                                                                                 | `{}`                                  |
-| `service.extraPorts`                | Extra port to expose on {{ cookiecutter.chart_title }} service                                                                                           | `[]`                                  |
-| `ingress.enabled`                   | Enable ingress record generation for {{ cookiecutter.chart_title }}                                                                                      | `false`                               |
-| `ingress.pathType`                  | Ingress path type                                                                                                                                        | `ImplementationSpecific`              |
-| `ingress.apiVersion`                | Force Ingress API version (automatically detected if not set)                                                                                            | `""`                                  |
-| `ingress.ingressClassName`          | IngressClass that will be be used to implement the Ingress (Kubernetes 1.18+)                                                                            | `""`                                  |
-| `ingress.hostname`                  | Default host for the ingress record. The hostname is templated and thus can contain other variable references.                                           | `{{ cookiecutter.chart_name }}.local` |
-| `ingress.path`                      | Default path for the ingress record                                                                                                                      | `/`                                   |
-| `ingress.annotations`               | Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations.                         | `{}`                                  |
-| `ingress.tls`                       | Enable TLS configuration for the host defined at `ingress.hostname` parameter                                                                            | `false`                               |
-| `ingress.tlsWwwPrefix`              | Adds www subdomain to default cert                                                                                                                       | `false`                               |
-| `ingress.selfSigned`                | Create a TLS secret for this ingress record using self-signed certificates generated by Helm                                                             | `false`                               |
-| `ingress.extraHosts`                | An array with additional hostname(s) to be covered with the ingress record. The host names are templated and thus can contain other variable references. | `[]`                                  |
-| `ingress.extraPaths`                | An array with additional arbitrary paths that may need to be added to the ingress under the main host                                                    | `[]`                                  |
-| `ingress.extraTls`                  | TLS configuration for additional hostname(s) to be covered with this ingress record                                                                      | `[]`                                  |
-| `ingress.secrets`                   | Custom TLS certificates as secrets                                                                                                                       | `[]`                                  |
-| `ingress.extraRules`                | Additional rules to be covered with this ingress record                                                                                                  | `[]`                                  |
+| Name                               | Description                                                                                                                                              | Value                                 |
+|------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------|
+| `service.type`                     | {! cookiecutter.chart_title !} service type                                                                                                              | `LoadBalancer`                        |
+| `service.ports.http`               | {! cookiecutter.chart_title !} service HTTP port                                                                                                         | `80`                                  |
+| `service.ports.https`              | {! cookiecutter.chart_title !} service HTTPS port                                                                                                        | `443`                                 |
+| `service.httpsTargetPort`          | Target port for HTTPS                                                                                                                                    | `https`                               |
+| `service.nodePorts.http`           | Node port for HTTP                                                                                                                                       | `""`                                  |
+| `service.nodePorts.https`          | Node port for HTTPS                                                                                                                                      | `""`                                  |
+| `service.sessionAffinity`          | Control where client requests go, to the same pod or round-robin                                                                                         | `None`                                |
+| `service.sessionAffinityConfig`    | Additional settings for the sessionAffinity                                                                                                              | `{}`                                  |
+| `service.clusterIP`                | {! cookiecutter.chart_title !} service Cluster IP                                                                                                        | `""`                                  |
+| `service.loadBalancerIP`           | {! cookiecutter.chart_title !} service Load Balancer IP                                                                                                  | `""`                                  |
+| `service.loadBalancerSourceRanges` | {! cookiecutter.chart_title !} service Load Balancer sources                                                                                             | `[]`                                  |
+| `service.externalTrafficPolicy`    | {! cookiecutter.chart_title !} service external traffic policy                                                                                           | `Cluster`                             |
+| `service.annotations`              | Additional custom annotations for {! cookiecutter.chart_title !} service                                                                                 | `{}`                                  |
+| `service.extraPorts`               | Extra port to expose on {! cookiecutter.chart_title !} service                                                                                           | `[]`                                  |
+| `ingress.enabled`                  | Enable ingress record generation for {! cookiecutter.chart_title !}                                                                                      | `false`                               |
+| `ingress.pathType`                 | Ingress path type                                                                                                                                        | `ImplementationSpecific`              |
+| `ingress.apiVersion`               | Force Ingress API version (automatically detected if not set)                                                                                            | `""`                                  |
+| `ingress.ingressClassName`         | IngressClass that will be be used to implement the Ingress (Kubernetes 1.18+)                                                                            | `""`                                  |
+| `ingress.hostname`                 | Default host for the ingress record. The hostname is templated and thus can contain other variable references.                                           | `{! cookiecutter.chart_name !}.local` |
+| `ingress.path`                     | Default path for the ingress record                                                                                                                      | `/`                                   |
+| `ingress.annotations`              | Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations.                         | `{}`                                  |
+| `ingress.tls`                      | Enable TLS configuration for the host defined at `ingress.hostname` parameter                                                                            | `false`                               |
+| `ingress.tlsWwwPrefix`             | Adds www subdomain to default cert                                                                                                                       | `false`                               |
+| `ingress.selfSigned`               | Create a TLS secret for this ingress record using self-signed certificates generated by Helm                                                             | `false`                               |
+| `ingress.extraHosts`               | An array with additional hostname(s) to be covered with the ingress record. The host names are templated and thus can contain other variable references. | `[]`                                  |
+| `ingress.extraPaths`               | An array with additional arbitrary paths that may need to be added to the ingress under the main host                                                    | `[]`                                  |
+| `ingress.extraTls`                 | TLS configuration for additional hostname(s) to be covered with this ingress record                                                                      | `[]`                                  |
+| `ingress.secrets`                  | Custom TLS certificates as secrets                                                                                                                       | `[]`                                  |
+| `ingress.extraRules`               | Additional rules to be covered with this ingress record                                                                                                  | `[]`                                  |
 
 ### Persistence Parameters
 
@@ -424,7 +424,7 @@ the `podAffinityPreset`, `podAntiAffinityPreset`, or `nodeAffinityPreset` parame
 | `persistence.size`                                          | Persistent Volume size                                                                                                                                                                                                                                | `10Gi`                     |
 | `persistence.dataSource`                                    | Custom PVC data source                                                                                                                                                                                                                                | `{}`                       |
 | `persistence.existingClaim`                                 | The name of an existing PVC to use for persistence                                                                                                                                                                                                    | `""`                       |
-| `persistence.selector`                                      | Selector to match an existing Persistent Volume for {{ cookiecutter.chart_title }} data PVC                                                                                                                                                           | `{}`                       |
+| `persistence.selector`                                      | Selector to match an existing Persistent Volume for {! cookiecutter.chart_title !} data PVC                                                                                                                                                           | `{}`                       |
 | `persistence.annotations`                                   | Persistent Volume Claim annotations                                                                                                                                                                                                                   | `{}`                       |
 | `volumePermissions.enabled`                                 | Enable init container that changes the owner/group of the PV mount point to `runAsUser:fsGroup`                                                                                                                                                       | `false`                    |
 | `volumePermissions.image.registry`                          | OS Shell + Utility image registry                                                                                                                                                                                                                     | `REGISTRY_NAME`            |
@@ -443,16 +443,16 @@ the `podAffinityPreset`, `podAntiAffinityPreset`, or `nodeAffinityPreset` parame
 |-----------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|---------|
 | `rbac.create`                                 | Create Role and RoleBinding                                                                                                                    | `false` |
 | `rbac.rules`                                  | Custom RBAC rules to set                                                                                                                       | `[]`    |
-| `serviceAccount.create`                       | Enable creation of ServiceAccount for {{ cookiecutter.chart_title }} pod                                                                       | `true`  |
+| `serviceAccount.create`                       | Enable creation of ServiceAccount for {! cookiecutter.chart_title !} pod                                                                       | `true`  |
 | `serviceAccount.name`                         | The name of the ServiceAccount to use.                                                                                                         | `""`    |
 | `serviceAccount.automountServiceAccountToken` | Allows auto mount of ServiceAccountToken on the serviceAccount created                                                                         | `false` |
 | `serviceAccount.annotations`                  | Additional custom annotations for the ServiceAccount                                                                                           | `{}`    |
 | `pdb.create`                                  | Enable a Pod Disruption Budget creation                                                                                                        | `true`  |
 | `pdb.minAvailable`                            | Minimum number/percentage of pods that should remain scheduled                                                                                 | `""`    |
 | `pdb.maxUnavailable`                          | Maximum number/percentage of pods that may be made unavailable. Defaults to `1` if both `pdb.minAvailable` and `pdb.maxUnavailable` are empty. | `""`    |
-| `autoscaling.enabled`                         | Enable Horizontal POD autoscaling for {{ cookiecutter.chart_title }}                                                                           | `false` |
-| `autoscaling.minReplicas`                     | Minimum number of {{ cookiecutter.chart_title }} replicas                                                                                      | `1`     |
-| `autoscaling.maxReplicas`                     | Maximum number of {{ cookiecutter.chart_title }} replicas                                                                                      | `11`    |
+| `autoscaling.enabled`                         | Enable Horizontal POD autoscaling for {! cookiecutter.chart_title !}                                                                           | `false` |
+| `autoscaling.minReplicas`                     | Minimum number of {! cookiecutter.chart_title !} replicas                                                                                      | `1`     |
+| `autoscaling.maxReplicas`                     | Maximum number of {! cookiecutter.chart_title !} replicas                                                                                      | `11`    |
 | `autoscaling.targetCPU`                       | Target CPU utilization percentage                                                                                                              | `50`    |
 | `autoscaling.targetMemory`                    | Target Memory utilization percentage                                                                                                           | `50`    |
 
@@ -468,48 +468,67 @@ the `podAffinityPreset`, `podAntiAffinityPreset`, or `nodeAffinityPreset` parame
 | `networkPolicy.ingressNSMatchLabels`    | Labels to match to allow traffic from other namespaces          | `{}`   |
 | `networkPolicy.ingressNSPodMatchLabels` | Pod labels to match to allow traffic from other namespaces      | `{}`   |
 
-
 ### Database Parameters
 
-| Name                                       | Description                                                                                                                                                                                                                | Value                                   |
-|--------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------|
+| Name | Description | Value |
+|------|-------------|-------|
+
 {%- if cookiecutter.use_db != "none" %}
-| `mariadb.enabled`                          | Deploy a MariaDB server to satisfy the applications database requirements                                                                                                                                                  | `true`                                  |
-| `mariadb.architecture`                     | MariaDB architecture. Allowed values: `standalone` or `replication`                                                                                                                                                        | `standalone`                            |
-| `mariadb.auth.rootPassword`                | MariaDB root password                                                                                                                                                                                                      | `""`                                    |
-| `mariadb.auth.database`                    | MariaDB custom database                                                                                                                                                                                                    | `bitnami_{{ cookiecutter.chart_name }}` |
-| `mariadb.auth.username`                    | MariaDB custom user name                                                                                                                                                                                                   | `bn_{{ cookiecutter.chart_name }}`      |
-| `mariadb.auth.password`                    | MariaDB custom user password                                                                                                                                                                                               | `""`                                    |
-| `mariadb.primary.persistence.enabled`      | Enable persistence on MariaDB using PVC(s)                                                                                                                                                                                 | `true`                                  |
-| `mariadb.primary.persistence.storageClass` | Persistent Volume storage class                                                                                                                                                                                            | `""`                                    |
-| `mariadb.primary.persistence.accessModes`  | Persistent Volume access modes                                                                                                                                                                                             | `[]`                                    |
-| `mariadb.primary.persistence.size`         | Persistent Volume size                                                                                                                                                                                                     | `8Gi`                                   |
-| `mariadb.primary.resourcesPreset`          | Set container resources according to one common preset (allowed values: none, nano, small, medium, large, xlarge, 2xlarge). This is ignored if primary.resources is set (primary.resources is recommended for production). | `micro`                                 |
-| `mariadb.primary.resources`                | Set container requests and limits for different resources like CPU or memory (essential for production workloads)                                                                                                          | `{}`                                    |
-| `externalDatabase.host`                    | External Database server host                                                                                                                                                                                              | `localhost`                             |
-| `externalDatabase.port`                    | External Database server port                                                                                                                                                                                              | `3306`                                  |
-| `externalDatabase.user`                    | External Database username                                                                                                                                                                                                 | `bn_{{ cookiecutter.chart_name }}`      |
-| `externalDatabase.password`                | External Database user password                                                                                                                                                                                            | `""`                                    |
-| `externalDatabase.database`                | External Database database name                                                                                                                                                                                            | `bitnami_{{ cookiecutter.chart_name }}` |
-| `externalDatabase.existingSecret`          | The name of an existing secret with database credentials. Evaluated as a template                                                                                                                                          | `""`                                    |
+| `mariadb.enabled`                          | Deploy a MariaDB server to satisfy the applications database
+requirements | `true`                                  |
+| `mariadb.architecture`                     | MariaDB architecture. Allowed values: `standalone`
+or `replication`                                                                                                                                                        | `standalone`                            |
+| `mariadb.auth.rootPassword`                | MariaDB root password | `""`                                    |
+| `mariadb.auth.database`                    | MariaDB custom database | `bitnami_{! cookiecutter.chart_name !}` |
+| `mariadb.auth.username`                    | MariaDB custom user name | `bn_{! cookiecutter.chart_name !}`      |
+| `mariadb.auth.password`                    | MariaDB custom user password | `""`                                    |
+| `mariadb.primary.persistence.enabled`      | Enable persistence on MariaDB using PVC(
+s)                                                                                                                                                                                 | `true`                                  |
+| `mariadb.primary.persistence.storageClass` | Persistent Volume storage
+class | `""`                                    |
+| `mariadb.primary.persistence.accessModes`  | Persistent Volume access
+modes | `[]`                                    |
+| `mariadb.primary.persistence.size`         | Persistent Volume size | `8Gi`                                   |
+| `mariadb.primary.resourcesPreset`          | Set container resources according to one common preset (allowed values:
+none, nano, small, medium, large, xlarge, 2xlarge). This is ignored if primary.resources is set (primary.resources is
+recommended for production). | `micro`                                 |
+| `mariadb.primary.resources`                | Set container requests and limits for different resources like CPU or
+memory (essential for production
+workloads)                                                                                                          | `{}`                                    |
+| `externalDatabase.host`                    | External Database server host | `localhost`                             |
+| `externalDatabase.port`                    | External Database server port | `3306`                                  |
+| `externalDatabase.user`                    | External Database username | `bn_{! cookiecutter.chart_name !}`      |
+| `externalDatabase.password`                | External Database user
+password | `""`                                    |
+| `externalDatabase.database`                | External Database database
+name | `bitnami_{! cookiecutter.chart_name !}` |
+| `externalDatabase.existingSecret`          | The name of an existing secret with database credentials. Evaluated as a
+template | `""`                                    |
 {% endif -%}
 {%- if cookiecutter.use_cache %}
-| `redis.enabled`                            | Deploy a Redis server for caching database queries                                                                                                                                                                         | `false`                                 |
-| `redis.auth.enabled`                       | Enable Redis authentication                                                                                                                                                                                                | `false`                                 |
-| `redis.auth.username`                      | Redis admin user                                                                                                                                                                                                           | `""`                                    |
-| `redis.auth.password`                      | Redis admin password                                                                                                                                                                                                       | `""`                                    |
-| `redis.auth.existingPasswordSecret`        | Existing secret with Redis credentials (must contain a value for `redis-password` key)                                                                                                                                     | `""`                                    |
-| `redis.service.port`                       | Redis service port                                                                                                                                                                                                         | `11211`                                 |
-| `redis.resourcesPreset`                    | Set container resources according to one common preset (allowed values: none, nano, small, medium, large, xlarge, 2xlarge). This is ignored if resources is set (resources is recommended for production).                 | `nano`                                  |
-| `redis.resources`                          | Set container requests and limits for different resources like CPU or memory (essential for production workloads)                                                                                                          | `{}`                                    |
-| `externalCache.host`                       | External cache server host                                                                                                                                                                                                 | `localhost`                             |
-| `externalCache.port`                       | External cache server port                                                                                                                                                                                                 | `11211`                                 |
+| `redis.enabled`                            | Deploy a Redis server for caching database
+queries | `false`                                 |
+| `redis.auth.enabled`                       | Enable Redis authentication | `false`                                 |
+| `redis.auth.username`                      | Redis admin user | `""`                                    |
+| `redis.auth.password`                      | Redis admin password | `""`                                    |
+| `redis.auth.existingPasswordSecret`        | Existing secret with Redis credentials (must contain a value
+for `redis-password`
+key)                                                                                                                                     | `""`                                    |
+| `redis.service.port`                       | Redis service port | `11211`                                 |
+| `redis.resourcesPreset`                    | Set container resources according to one common preset (allowed values:
+none, nano, small, medium, large, xlarge, 2xlarge). This is ignored if resources is set (resources is recommended for
+production). | `nano`                                  |
+| `redis.resources`                          | Set container requests and limits for different resources like CPU or
+memory (essential for production
+workloads)                                                                                                          | `{}`                                    |
+| `externalCache.host`                       | External cache server host | `localhost`                             |
+| `externalCache.port`                       | External cache server port | `11211`                                 |
 {% endif %}
 
 > Note: You need to substitute the placeholders `REGISTRY_NAME` and `REPOSITORY_NAME` with a reference to your Helm
-> chart registry and repository. For example, in the case of {{ cookiecutter.organization }}, you need to
+> chart registry and repository. For example, in the case of {! cookiecutter.organization !}, you need to
 > use `REGISTRY_NAME=registry-1.docker.io`
-> and `REPOSITORY_NAME={{ cookiecutter.__organization_name }}`.
+> and `REPOSITORY_NAME={! cookiecutter.__organization_name !}`.
 
 > NOTE: Once this chart is deployed, it is not possible to change the application's access credentials, such as
 > usernames or passwords, using Helm. To change these application credentials after deployment, delete any persistent
@@ -519,19 +538,19 @@ Alternatively, a YAML file that specifies the values for the above parameters ca
 chart. For example,
 
 ```console
-helm install my-release -f values.yaml oci://REGISTRY_NAME/REPOSITORY_NAME/{{ cookiecutter.chart_name }}
+helm install my-release -f values.yaml oci://REGISTRY_NAME/REPOSITORY_NAME/{! cookiecutter.chart_name !}
 ```
 
 > Note: You need to substitute the placeholders `REGISTRY_NAME` and `REPOSITORY_NAME` with a reference to your Helm
-> chart registry and repository. For example, in the case of {{ cookiecutter.organization }}, you need to
+> chart registry and repository. For example, in the case of {! cookiecutter.organization !}, you need to
 > use `REGISTRY_NAME=registry-1.docker.io`
-> and `REPOSITORY_NAME={{ cookiecutter.__organization_name }}`.
+> and `REPOSITORY_NAME={! cookiecutter.__organization_name !}`.
 > **Tip**:
-> You can use the default [values.yaml](https://github.com/{{ cookiecutter.__organization_name }}/charts/tree/main/{{ cookiecutter.__organization_name }}/{{ cookiecutter.chart_name }}/values.yaml)
+> You can use the default [values.yaml](https://github.com/{! cookiecutter.__organization_name !}/charts/tree/main/{! cookiecutter.__organization_name !}/{! cookiecutter.chart_name !}/values.yaml)
 
 ## Troubleshooting
 
-Find more information about how to deal with common errors related to {{ cookiecutter.organization }}'s Helm charts
+Find more information about how to deal with common errors related to {! cookiecutter.organization !}'s Helm charts
 in [this troubleshooting guide](https://docs.bitnami.com/general/how-to/troubleshoot-helm-chart-issues).
 
 ## Notable changes

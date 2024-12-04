@@ -1,4 +1,4 @@
-* {{ cookiecutter.chart_name }} version:
+* {! cookiecutter.chart_name !} version:
 * Helm version:
 * Operating System:
 

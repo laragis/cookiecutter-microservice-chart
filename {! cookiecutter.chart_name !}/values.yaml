@@ -68,23 +68,23 @@ diagnosticMode:
   args:
     - infinity
 
-## @section {{ cookiecutter.chart_title }} Image parameters
+## @section {! cookiecutter.chart_title !} Image parameters
 ##
 
-## {{ cookiecutter.organization }} {{ cookiecutter.chart_title }} image
-## ref: https://hub.docker.com/r/{{ cookiecutter.__organization_name }}/{{ cookiecutter.image_name }}/tags/
-## @param image.registry [default: REGISTRY_NAME] {{ cookiecutter.chart_title }} image registry
-## @param image.repository [default: REPOSITORY_NAME/{{ cookiecutter.image_name }}] {{ cookiecutter.chart_title }} image repository
-## @skip image.tag {{ cookiecutter.image_name }} image tag (immutable tags are recommended)
-## @param image.digest {{ cookiecutter.image_name }} image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag
-## @param image.pullPolicy {{ cookiecutter.image_name }} image pull policy
-## @param image.pullSecrets {{ cookiecutter.image_name }} image pull secrets
+## {! cookiecutter.organization !} {! cookiecutter.chart_title !} image
+## ref: https://hub.docker.com/r/{! cookiecutter.__organization_name !}/{! cookiecutter.image_name !}/tags/
+## @param image.registry [default: REGISTRY_NAME] {! cookiecutter.chart_title !} image registry
+## @param image.repository [default: REPOSITORY_NAME/{! cookiecutter.image_name !}] {! cookiecutter.chart_title !} image repository
+## @skip image.tag {! cookiecutter.image_name !} image tag (immutable tags are recommended)
+## @param image.digest {! cookiecutter.image_name !} image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag
+## @param image.pullPolicy {! cookiecutter.image_name !} image pull policy
+## @param image.pullSecrets {! cookiecutter.image_name !} image pull secrets
 ## @param image.debug Specify if debug values should be set
 ##
 image:
   registry: docker.io
-  repository: {{ cookiecutter.__organization_name }}/{{ cookiecutter.image_name }}
-  tag: {{ cookiecutter.image_tag }}
+  repository: {! cookiecutter.__organization_name !}/{! cookiecutter.image_name !}
+  tag: {! cookiecutter.image_tag !}
   digest: ""
   ## Specify a imagePullPolicy
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -102,9 +102,9 @@ image:
   ##
   debug: false
 
-## @section {{ cookiecutter.image_name }} Configuration parameters
-## {{ cookiecutter.image_name }} settings based on environment variables
-## ref: https://github.com/{{ cookiecutter.__organization_name }}/containers/tree/main/{{ cookiecutter.__organization_name }}/{{ cookiecutter.image_name }}#environment-variables
+## @section {! cookiecutter.image_name !} Configuration parameters
+## {! cookiecutter.image_name !} settings based on environment variables
+## ref: https://github.com/{! cookiecutter.__organization_name !}/containers/tree/main/{! cookiecutter.__organization_name !}/{! cookiecutter.image_name !}#environment-variables
 ##
 ## @param command Override default container command (useful when using custom images)
 ##
@@ -112,7 +112,7 @@ command: []
 ## @param args Override default container args (useful when using custom images)
 ##
 args: []
-## @param extraEnvVars Array with extra environment variables to add to the {{ cookiecutter.image_name }} container
+## @param extraEnvVars Array with extra environment variables to add to the {! cookiecutter.image_name !} container
 ## e.g:
 ## extraEnvVars:
 ##   - name: FOO
@@ -126,14 +126,14 @@ extraEnvVarsCM: ""
 ##
 extraEnvVarsSecret: ""
 
-## @section {{ cookiecutter.chart_title }} deployment parameters
+## @section {! cookiecutter.chart_title !} deployment parameters
 ##
 
-## @param replicaCount Number of {{ cookiecutter.chart_title }} replicas to deploy
+## @param replicaCount Number of {! cookiecutter.chart_title !} replicas to deploy
 ## NOTE: ReadWriteMany PVC(s) are required if replicaCount > 1
 ##
 replicaCount: 1
-## @param updateStrategy.type {{ cookiecutter.chart_title }} deployment strategy type
+## @param updateStrategy.type {! cookiecutter.chart_title !} deployment strategy type
 ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
 ## NOTE: Set it to `Recreate` if you use a PV that cannot be mounted on multiple pods
 ## e.g:
@@ -149,7 +149,7 @@ updateStrategy:
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
 ##
 schedulerName: ""
-## @param terminationGracePeriodSeconds In seconds, time given to the {{ cookiecutter.chart_title }} pod to terminate gracefully
+## @param terminationGracePeriodSeconds In seconds, time given to the {! cookiecutter.chart_title !} pod to terminate gracefully
 ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods
 ##
 terminationGracePeriodSeconds: ""
@@ -157,14 +157,14 @@ terminationGracePeriodSeconds: ""
 ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/#spread-constraints-for-pods
 ##
 topologySpreadConstraints: []
-## @param priorityClassName Name of the existing priority class to be used by {{ cookiecutter.chart_title }} pods, priority class needs to be created beforehand
+## @param priorityClassName Name of the existing priority class to be used by {! cookiecutter.chart_title !} pods, priority class needs to be created beforehand
 ## Ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
 ##
 priorityClassName: ""
 ## @param automountServiceAccountToken Mount Service Account token in pod
 ##
 automountServiceAccountToken: false
-## @param hostAliases [array] {{ cookiecutter.chart_title }} pod host aliases
+## @param hostAliases [array] {! cookiecutter.chart_title !} pod host aliases
 ## https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
 ##
 hostAliases:
@@ -173,13 +173,13 @@ hostAliases:
   - ip: "127.0.0.1"
     hostnames:
       - "status.localhost"
-## @param extraVolumes Optionally specify extra list of additional volumes for {{ cookiecutter.chart_title }} pods
+## @param extraVolumes Optionally specify extra list of additional volumes for {! cookiecutter.chart_title !} pods
 ##
 extraVolumes: []
-## @param extraVolumeMounts Optionally specify extra list of additional volumeMounts for {{ cookiecutter.chart_title }} container(s)
+## @param extraVolumeMounts Optionally specify extra list of additional volumeMounts for {! cookiecutter.chart_title !} container(s)
 ##
 extraVolumeMounts: []
-## @param sidecars Add additional sidecar containers to the {{ cookiecutter.chart_title }} pod
+## @param sidecars Add additional sidecar containers to the {! cookiecutter.chart_title !} pod
 ## e.g:
 ## sidecars:
 ##   - name: your-image-name
@@ -190,21 +190,21 @@ extraVolumeMounts: []
 ##         containerPort: 1234
 ##
 sidecars: []
-## @param initContainers Add additional init containers to the {{ cookiecutter.chart_title }} pods
+## @param initContainers Add additional init containers to the {! cookiecutter.chart_title !} pods
 ## ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
 ## e.g:
 ## initContainers:
 ##  - name: your-image-name
 ##    image: your-image
 ##    imagePullPolicy: Always
-##    command: ['sh', '-c', 'copy themes and plugins from git and push to /bitnami/{{ cookiecutter.image_name }}/wp-content. Should work with extraVolumeMounts and extraVolumes']
+##    command: ['sh', '-c', 'copy themes and plugins from git and push to /bitnami/{! cookiecutter.image_name !}/wp-content. Should work with extraVolumeMounts and extraVolumes']
 ##
 initContainers: []
-## @param podLabels Extra labels for {{ cookiecutter.chart_title }} pods
+## @param podLabels Extra labels for {! cookiecutter.chart_title !} pods
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 ##
 podLabels: {}
-## @param podAnnotations Annotations for {{ cookiecutter.chart_title }} pods
+## @param podAnnotations Annotations for {! cookiecutter.chart_title !} pods
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 ##
 podAnnotations: {}
@@ -246,7 +246,7 @@ nodeSelector: {}
 ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
 ##
 tolerations: []
-## {{ cookiecutter.chart_title }} containers' resource requests and limits
+## {! cookiecutter.chart_title !} containers' resource requests and limits
 ## ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
 ## @param resourcesPreset Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if resources is set (resources is recommended for production).
 ## More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
@@ -264,8 +264,8 @@ resourcesPreset: "micro"
 ##
 resources: {}
 ## Container ports
-## @param containerPorts.http {{ cookiecutter.chart_title }} HTTP container port
-## @param containerPorts.https {{ cookiecutter.chart_title }} HTTPS container port
+## @param containerPorts.http {! cookiecutter.chart_title !} HTTP container port
+## @param containerPorts.https {! cookiecutter.chart_title !} HTTPS container port
 ## Example:
 ## containerPorts:
 ##   http: 80
@@ -273,7 +273,7 @@ resources: {}
 ##
 containerPorts:
   http: 80
-## @param extraContainerPorts Optionally specify extra list of additional ports for {{ cookiecutter.chart_title }} container(s)
+## @param extraContainerPorts Optionally specify extra list of additional ports for {! cookiecutter.chart_title !} container(s)
 ## e.g:
 ## extraContainerPorts:
 ##   - name: myservice
@@ -282,11 +282,11 @@ containerPorts:
 extraContainerPorts: []
 ## Configure Pods Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
-## @param podSecurityContext.enabled Enabled {{ cookiecutter.chart_title }} pods' Security Context
+## @param podSecurityContext.enabled Enabled {! cookiecutter.chart_title !} pods' Security Context
 ## @param podSecurityContext.fsGroupChangePolicy Set filesystem group change policy
 ## @param podSecurityContext.sysctls Set kernel settings using the sysctl interface
 ## @param podSecurityContext.supplementalGroups Set filesystem extra groups
-## @param podSecurityContext.fsGroup Set {{ cookiecutter.chart_title }} pod's Security Context fsGroup
+## @param podSecurityContext.fsGroup Set {! cookiecutter.chart_title !} pod's Security Context fsGroup
 ##
 podSecurityContext:
   enabled: false
@@ -320,9 +320,9 @@ containerSecurityContext:
     drop: ["ALL"]
   seccompProfile:
     type: "RuntimeDefault"
-## Configure extra options for {{ cookiecutter.chart_title }} containers' liveness, readiness and startup probes
+## Configure extra options for {! cookiecutter.chart_title !} containers' liveness, readiness and startup probes
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
-## @param startupProbe.enabled Enable startupProbe on {{ cookiecutter.chart_title }} containers
+## @param startupProbe.enabled Enable startupProbe on {! cookiecutter.chart_title !} containers
 ## @skip startupProbe.httpGet
 ## @param startupProbe.initialDelaySeconds Initial delay seconds for startupProbe
 ## @param startupProbe.periodSeconds Period seconds for startupProbe
@@ -342,7 +342,7 @@ startupProbe:
   timeoutSeconds: 5
   failureThreshold: 6
   successThreshold: 1
-## @param livenessProbe.enabled Enable livenessProbe on {{ cookiecutter.chart_title }} containers
+## @param livenessProbe.enabled Enable livenessProbe on {! cookiecutter.chart_title !} containers
 ## @skip livenessProbe.tcpSocket
 ## @param livenessProbe.initialDelaySeconds Initial delay seconds for livenessProbe
 ## @param livenessProbe.periodSeconds Period seconds for livenessProbe
@@ -362,7 +362,7 @@ livenessProbe:
   timeoutSeconds: 5
   failureThreshold: 6
   successThreshold: 1
-## @param readinessProbe.enabled Enable readinessProbe on {{ cookiecutter.chart_title }} containers
+## @param readinessProbe.enabled Enable readinessProbe on {! cookiecutter.chart_title !} containers
 ## @skip readinessProbe.httpGet
 ## @param readinessProbe.initialDelaySeconds Initial delay seconds for readinessProbe
 ## @param readinessProbe.periodSeconds Period seconds for readinessProbe
@@ -392,20 +392,20 @@ customReadinessProbe: {}
 ## @param customStartupProbe Custom startupProbe that overrides the default one
 ##
 customStartupProbe: {}
-## @param lifecycleHooks for the {{ cookiecutter.chart_title }} container(s) to automate configuration before or after startup
+## @param lifecycleHooks for the {! cookiecutter.chart_title !} container(s) to automate configuration before or after startup
 ##
 lifecycleHooks: {}
 
 ## @section Traffic Exposure Parameters
 ##
 
-## {{ cookiecutter.chart_title }} service parameters
+## {! cookiecutter.chart_title !} service parameters
 ##
 service:
-  ## @param service.type {{ cookiecutter.chart_title }} service type
+  ## @param service.type {! cookiecutter.chart_title !} service type
   ##
   type: ClusterIP
-  ## @param service.ports.http {{ cookiecutter.chart_title }} service HTTP port
+  ## @param service.ports.http {! cookiecutter.chart_title !} service HTTP port
   ##
   ports:
     http: 80
@@ -430,37 +430,37 @@ service:
   ##     timeoutSeconds: 300
   ##
   sessionAffinityConfig: {}
-  ## @param service.clusterIP {{ cookiecutter.chart_title }} service Cluster IP
+  ## @param service.clusterIP {! cookiecutter.chart_title !} service Cluster IP
   ## e.g.:
   ## clusterIP: None
   ##
   clusterIP: ""
-  ## @param service.loadBalancerIP {{ cookiecutter.chart_title }} service Load Balancer IP
+  ## @param service.loadBalancerIP {! cookiecutter.chart_title !} service Load Balancer IP
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-loadbalancer
   ##
   loadBalancerIP: ""
-  ## @param service.loadBalancerSourceRanges {{ cookiecutter.chart_title }} service Load Balancer sources
+  ## @param service.loadBalancerSourceRanges {! cookiecutter.chart_title !} service Load Balancer sources
   ## ref: https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/#restrict-access-for-loadbalancer-service
   ## e.g:
   ## loadBalancerSourceRanges:
   ##   - 10.10.10.0/24
   ##
   loadBalancerSourceRanges: []
-  ## @param service.externalTrafficPolicy {{ cookiecutter.chart_title }} service external traffic policy
+  ## @param service.externalTrafficPolicy {! cookiecutter.chart_title !} service external traffic policy
   ## ref https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
   ##
   externalTrafficPolicy: Cluster
-  ## @param service.annotations Additional custom annotations for {{ cookiecutter.chart_title }} service
+  ## @param service.annotations Additional custom annotations for {! cookiecutter.chart_title !} service
   ##
   annotations: {}
-  ## @param service.extraPorts Extra port to expose on {{ cookiecutter.chart_title }} service
+  ## @param service.extraPorts Extra port to expose on {! cookiecutter.chart_title !} service
   ##
   extraPorts: []
-## Configure the ingress resource that allows you to access the {{ cookiecutter.chart_title }} installation
+## Configure the ingress resource that allows you to access the {! cookiecutter.chart_title !} installation
 ## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ##
 ingress:
-  ## @param ingress.enabled Enable ingress record generation for {{ cookiecutter.chart_title }}
+  ## @param ingress.enabled Enable ingress record generation for {! cookiecutter.chart_title !}
   ##
   enabled: false
   ## @param ingress.pathType Ingress path type
@@ -476,7 +476,7 @@ ingress:
   ingressClassName: ""
   ## @param ingress.hostname Default host for the ingress record. The hostname is templated and thus can contain other variable references.
   ##
-  hostname: {{ cookiecutter.chart_name }}.local
+  hostname: {! cookiecutter.chart_name !}.local
   ## @param ingress.path Default path for the ingress record
   ## NOTE: You may need to set this to '/*' in order to use this with ALB ingress controllers
   ##
@@ -494,7 +494,7 @@ ingress:
   ##
   annotations: {}
   ## @param ingress.tls Enable TLS configuration for the host defined at `ingress.hostname` parameter
-  ## TLS certificates will be retrieved from a TLS secret with name: `{% raw %}{{- printf "%s-tls" .Values.ingress.hostname }}{% endraw %}`
+  ## TLS certificates will be retrieved from a TLS secret with name: `{{- printf "%s-tls" .Values.ingress.hostname }}`
   ## You can:
   ##   - Use the `ingress.secrets` parameter to create this TLS secret
   ##   - Rely on cert-manager to create it by setting the corresponding annotations
@@ -502,7 +502,7 @@ ingress:
   ##
   tls: false
   ## @param ingress.tlsWwwPrefix Adds www subdomain to default cert
-  ## Creates tls host with ingress.hostname: {% raw %}{{ print "www.%s" .Values.ingress.hostname }}{% endraw %}
+  ## Creates tls host with ingress.hostname: {{ print "www.%s" .Values.ingress.hostname }}
   ## Is enabled if "nginx.ingress.kubernetes.io/from-to-www-redirect" is "true"
   tlsWwwPrefix: false
   ## @param ingress.selfSigned Create a TLS secret for this ingress record using self-signed certificates generated by Helm
@@ -511,7 +511,7 @@ ingress:
   ## @param ingress.extraHosts An array with additional hostname(s) to be covered with the ingress record. The host names are templated and thus can contain other variable references.
   ## e.g:
   ## extraHosts:
-  ##   - name: {{ cookiecutter.chart_name }}.local
+  ##   - name: {! cookiecutter.chart_name !}.local
   ##     path: /
   ##
   extraHosts: []
@@ -529,8 +529,8 @@ ingress:
   ## e.g:
   ## extraTls:
   ## - hosts:
-  ##     - {{ cookiecutter.chart_name }}.local
-  ##   secretName: {{ cookiecutter.chart_name }}.local-tls
+  ##     - {! cookiecutter.chart_name !}.local
+  ##   secretName: {! cookiecutter.chart_name !}.local-tls
   ##
   extraTls: []
   ## @param ingress.secrets Custom TLS certificates as secrets
@@ -542,7 +542,7 @@ ingress:
   ## Please see README.md for more information
   ## e.g:
   ## secrets:
-  ##   - name: {{ cookiecutter.chart_name }}.local-tls
+  ##   - name: {! cookiecutter.chart_name !}.local-tls
   ##     key: |-
   ##       -----BEGIN RSA PRIVATE KEY-----
   ##       ...
@@ -557,12 +557,12 @@ ingress:
   ## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-rules
   ## e.g:
   ## extraRules:
-  ## - host: {{ cookiecutter.chart_name }}.local
+  ## - host: {! cookiecutter.chart_name !}.local
   ##     http:
   ##       path: /
   ##       backend:
   ##         service:
-  ##           name: {{ cookiecutter.chart_name }}-svc
+  ##           name: {! cookiecutter.chart_name !}-svc
   ##           port:
   ##             name: http
   ##
@@ -606,7 +606,7 @@ persistence:
   ## @param persistence.existingClaim The name of an existing PVC to use for persistence
   ##
   existingClaim: ""
-  ## @param persistence.selector Selector to match an existing Persistent Volume for {{ cookiecutter.chart_title }} data PVC
+  ## @param persistence.selector Selector to match an existing Persistent Volume for {! cookiecutter.chart_title !} data PVC
   ## If set, the PVC can't have a PV dynamically provisioned for it
   ## E.g.
   ## selector:
@@ -695,11 +695,11 @@ rbac:
   ##       - list
   ##
   rules: []
-## {{ cookiecutter.chart_title }} Service Account
+## {! cookiecutter.chart_title !} Service Account
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
 ##
 serviceAccount:
-  ## @param serviceAccount.create Enable creation of ServiceAccount for {{ cookiecutter.chart_title }} pod
+  ## @param serviceAccount.create Enable creation of ServiceAccount for {! cookiecutter.chart_title !} pod
   ##
   create: true
   ## @param serviceAccount.name The name of the ServiceAccount to use.
@@ -713,7 +713,7 @@ serviceAccount:
   ## @param serviceAccount.annotations Additional custom annotations for the ServiceAccount
   ##
   annotations: {}
-## {{ cookiecutter.chart_title }} Pod Disruption Budget configuration
+## {! cookiecutter.chart_title !} Pod Disruption Budget configuration
 ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
 ## @param pdb.create Enable a Pod Disruption Budget creation
 ## @param pdb.minAvailable Minimum number/percentage of pods that should remain scheduled
@@ -723,7 +723,7 @@ pdb:
   create: true
   minAvailable: ""
   maxUnavailable: ""
-## {{ cookiecutter.chart_title }} Autoscaling configuration
+## {! cookiecutter.chart_title !} Autoscaling configuration
 ## ref: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 ##
 autoscaling:
@@ -824,24 +824,24 @@ networkPolicy:
 ##
 {%- if cookiecutter.use_db != "none" %}
 ## Database chart configuration
-## ref: https://github.com/bitnami/charts/blob/main/bitnami/{{ cookiecutter.use_db }}/values.yaml
+## ref: https://github.com/bitnami/charts/blob/main/bitnami/{! cookiecutter.use_db !}/values.yaml
 ##
-{{ cookiecutter.use_db }}:
-  ## @param {{ cookiecutter.use_db }}.enabled Deploy a Database server to satisfy the applications database requirements
+{! cookiecutter.use_db !}:
+  ## @param {! cookiecutter.use_db !}.enabled Deploy a Database server to satisfy the applications database requirements
   ## To use an external database set this to false and configure the `externalDatabase.*` parameters
   ##
   enabled: false
-  ## @param {{ cookiecutter.use_db }}.architecture Database architecture. Allowed values: `standalone` or `replication`
+  ## @param {! cookiecutter.use_db !}.architecture Database architecture. Allowed values: `standalone` or `replication`
   ##
   architecture: standalone
   ## Database Authentication parameters
-  ## @param {{ cookiecutter.use_db }}.auth.rootPassword Database root password
-  ## @param {{ cookiecutter.use_db }}.auth.database Database custom database
-  ## @param {{ cookiecutter.use_db }}.auth.username Database custom user name
-  ## @param {{ cookiecutter.use_db }}.auth.password Database custom user password
-  ## ref: https://github.com/bitnami/containers/tree/main/bitnami/{{ cookiecutter.use_db }}#setting-the-root-password-on-first-run
-  ##      https://github.com/bitnami/containers/blob/main/bitnami/{{ cookiecutter.use_db }}/README.md#creating-a-database-on-first-run
-  ##      https://github.com/bitnami/containers/blob/main/bitnami/{{ cookiecutter.use_db }}/README.md#creating-a-database-user-on-first-run
+  ## @param {! cookiecutter.use_db !}.auth.rootPassword Database root password
+  ## @param {! cookiecutter.use_db !}.auth.database Database custom database
+  ## @param {! cookiecutter.use_db !}.auth.username Database custom user name
+  ## @param {! cookiecutter.use_db !}.auth.password Database custom user password
+  ## ref: https://github.com/bitnami/containers/tree/main/bitnami/{! cookiecutter.use_db !}#setting-the-root-password-on-first-run
+  ##      https://github.com/bitnami/containers/blob/main/bitnami/{! cookiecutter.use_db !}/README.md#creating-a-database-on-first-run
+  ##      https://github.com/bitnami/containers/blob/main/bitnami/{! cookiecutter.use_db !}/README.md#creating-a-database-user-on-first-run
   ##
   auth:
     rootPassword: ""
@@ -853,10 +853,10 @@ networkPolicy:
   primary:
     ## Database Primary Persistence parameters
     ## ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
-    ## @param {{ cookiecutter.use_db }}.primary.persistence.enabled Enable persistence on Database using PVC(s)
-    ## @param {{ cookiecutter.use_db }}.primary.persistence.storageClass Persistent Volume storage class
-    ## @param {{ cookiecutter.use_db }}.primary.persistence.accessModes [array] Persistent Volume access modes
-    ## @param {{ cookiecutter.use_db }}.primary.persistence.size Persistent Volume size
+    ## @param {! cookiecutter.use_db !}.primary.persistence.enabled Enable persistence on Database using PVC(s)
+    ## @param {! cookiecutter.use_db !}.primary.persistence.storageClass Persistent Volume storage class
+    ## @param {! cookiecutter.use_db !}.primary.persistence.accessModes [array] Persistent Volume access modes
+    ## @param {! cookiecutter.use_db !}.primary.persistence.size Persistent Volume size
     ##
     persistence:
       enabled: true
@@ -870,11 +870,11 @@ networkPolicy:
     ## choice for the user. This also increases chances charts run on environments with little
     ## resources, such as Minikube. If you do want to specify resources, uncomment the following
     ## lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    ## @param {{ cookiecutter.use_db }}.primary.resourcesPreset Set container resources according to one common preset (allowed values: none, nano, small, medium, large, xlarge, 2xlarge). This is ignored if primary.resources is set (primary.resources is recommended for production).
+    ## @param {! cookiecutter.use_db !}.primary.resourcesPreset Set container resources according to one common preset (allowed values: none, nano, small, medium, large, xlarge, 2xlarge). This is ignored if primary.resources is set (primary.resources is recommended for production).
     ## More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
     ##
     resourcesPreset: "micro"
-    ## @param {{ cookiecutter.use_db }}.primary.resources Set container requests and limits for different resources like CPU or memory (essential for production workloads)
+    ## @param {! cookiecutter.use_db !}.primary.resources Set container requests and limits for different resources like CPU or memory (essential for production workloads)
     ## Example:
     ## resources:
     ##   requests:
@@ -886,7 +886,7 @@ networkPolicy:
     ##
     resources: {}
 ## External Database Configuration
-## All of these values are only used if `{{ cookiecutter.use_db }}.enabled=false`
+## All of these values are only used if `{! cookiecutter.use_db !}.enabled=false`
 ##
 externalDatabase:
   ## @param externalDatabase.host External Database server host
@@ -905,7 +905,7 @@ externalDatabase:
   ##
   database: postgres
   ## @param externalDatabase.existingSecret The name of an existing secret with database credentials. Evaluated as a template
-  ## NOTE: Must contain key `{{ cookiecutter.use_db }}-password`
+  ## NOTE: Must contain key `{! cookiecutter.use_db !}-password`
   ## NOTE: When it's set, the `externalDatabase.password` parameter is ignored
   ##
   existingSecret: ""

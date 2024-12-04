@@ -37,30 +37,30 @@ def remove_workload_files(type):
 
 
 def main():
-  debug = "{{ cookiecutter.debug }}".lower() == "true"
+  debug = "{! cookiecutter.debug !}".lower() == "true"
 
   # Autoscaling
-  if "{{ cookiecutter.use_autoscaling }}" == "hpa":
+  if "{! cookiecutter.use_autoscaling !}" == "hpa":
     remove_vpa_files()
 
-  if "{{ cookiecutter.use_autoscaling }}" == "vpa":
+  if "{! cookiecutter.use_autoscaling !}" == "vpa":
     remove_hpa_files()
 
-  if "{{ cookiecutter.use_autoscaling }}" == "none":
+  if "{! cookiecutter.use_autoscaling !}" == "none":
     remove_hpa_files()
     remove_vpa_files()
 
   print(SUCCESS + "Chart initialized, keep up the good work!" + TERMINATOR)
 
   # Workload
-  remove_workload_files("{{ cookiecutter.use_workload }}")
+  remove_workload_files("{! cookiecutter.use_workload !}")
 
   # Redis
-  if "{{ cookiecutter.use_cache }}" == "False":
+  if "{! cookiecutter.use_cache !}" == "False":
     remove_cache_files()
 
   # Database
-  if "{{ cookiecutter.use_db }}" == "none":
+  if "{! cookiecutter.use_db !}" == "none":
     remove_db_files()
 
 

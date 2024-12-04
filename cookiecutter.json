@@ -1,14 +1,14 @@
 {
   "chart_title": "Microservice",
-  "chart_name": "{{ cookiecutter.chart_title.lower()|replace(' ', '-')|replace('.', '-')|trim() }}",
+  "chart_name": "{! cookiecutter.chart_title.lower()|replace(' ', '-')|replace('.', '-')|trim() !}",
   "chart_description": "Helm chart Boilerplate contains all the boilerplate you need to create a Helm chart.",
   "chart_version": "0.1.0",
   "organization": "LaraGIS",
-  "__organization_name": "{{ cookiecutter.organization | lower }}",
+  "__organization_name": "{! cookiecutter.organization | lower !}",
   "app_version": "0.1.0",
   "image_registry": "docker.io",
-  "image_name": "{{ cookiecutter.chart_name }}",
-  "image_tag": "{{ cookiecutter.app_version }}",
+  "image_name": "{! cookiecutter.chart_name !}",
+  "image_tag": "{! cookiecutter.app_version !}",
   "author_name": "Truong Thanh Tung",
   "use_workload": [
     "deployment",
@@ -29,7 +29,7 @@
   ],
   "use_cache": true,
   "github_username": "ttungbmt",
-  "email": "{{ cookiecutter.github_username | lower | trim }}@gmail.com",
+  "email": "{! cookiecutter.github_username | lower | trim !}@gmail.com",
   "license": [
     "MIT",
     "BSD-3",
@@ -37,5 +37,6 @@
     "Apache Software License 2.0",
     "Mozilla Public License 2.0"
   ],
-  "debug": true
+  "debug": true,
+  "_jinja2_env_vars": {"variable_start_string": "{!", "variable_end_string": "!}"}
 }
