@@ -241,7 +241,7 @@ Return whether Redis is enabled or not.
 Return the proper image name (for the init container volume-permissions image)
 */}}
 {{- define "{! cookiecutter.chart_name !}.initContainers.volumePermissions.image" -}}
-{{- include "common.images.image" ( dict "imageRoot" .Values.volumePermissions.image "global" .Values.global ) -}}
+{{- include "common.images.image" ( dict "imageRoot" .Values.initContainers.volumePermissions.image "global" .Values.global ) -}}
 {{- end -}}
 
 {{- define "{! cookiecutter.chart_name !}.initContainers.volumePermissions" -}}
