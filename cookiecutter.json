@@ -16,9 +16,9 @@
     "daemonset"
   ],
   "use_autoscaling": [
+    "all",
     "hpa",
     "vpa",
-    "all",
     "none"
   ],
   "use_db": [
