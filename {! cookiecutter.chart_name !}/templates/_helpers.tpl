@@ -23,7 +23,7 @@ Return the proper image name (for the init container volume-permissions image)
 Return the proper Docker Image Registry Secret Names
 */}}
 {{- define "{! cookiecutter.chart_name !}.imagePullSecrets" -}}
-{{- include "common.images.pullSecrets" (dict "images" (list .Values.image .Values.volumePermissions.image) "global" .Values.global) -}}
+{{- include "common.images.pullSecrets" (dict "images" (list .Values.image) "global" .Values.global) -}}
 {{- end -}}
 
 {{/*
@@ -151,6 +151,15 @@ Return whether Database uses password authentication or not
     {{- true -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return whether Database is enabled or not.
+*/}}
+{{- define "{! cookiecutter.chart_name !}.database.enabled" -}}
+{{- if or .Values.{! cookiecutter.use_db !}.enabled (and (not .Values.{! cookiecutter.use_db !}.enabled) (ne .Values.externalDatabase.host "localhost")) }}
+    {{- true -}}
+{{- end -}}
+{{- end -}}
 {% endif -%}
 
 {%- if cookiecutter.use_cache %}
@@ -224,4 +233,101 @@ Return whether Redis uses password authentication or not
     {{- true -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return whether Redis is enabled or not.
+*/}}
+{{- define "{! cookiecutter.chart_name !}.redis.enabled" -}}
+{{- if or .Values.redis.enabled (and (not .Values.redis.enabled) (ne .Values.externalRedis.host "localhost")) }}
+    {{- true -}}
+{{- end -}}
+{{- end -}}
 {% endif -%}
+
+{{/*
+Return the proper image name (for the init container wait-for-it image)
+*/}}
+{{- define "{! cookiecutter.chart_name !}.waitForInitContainer.image" -}}
+{{- include "common.images.image" ( dict "imageRoot" .Values.waitForInitContainer.image "global" .Values.global ) -}}
+{{- end -}}
+
+{{- define "{! cookiecutter.chart_name !}.volumePermissions" -}}
+- name: volume-permissions
+  image: "{{ include "{! cookiecutter.chart_name !}.volumePermissions.image" . }}"
+  imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
+  command:
+    - /bin/bash
+  args:
+    - -ec
+    - |
+      mkdir -p {{ .Values.persistence.mountPath }}
+      {{- if eq ( toString ( .Values.volumePermissions.containerSecurityContext.runAsUser )) "auto" }}
+      find {{ .Values.persistence.mountPath }} -mindepth 0 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | xargs -r chown -R $(id -u):$(id -G | cut -d " " -f2)
+      {{- else }}
+      find {{ .Values.persistence.mountPath }} -mindepth 0 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | xargs -r chown -R {{ .Values.containerSecurityContext.runAsUser }}:{{ .Values.podSecurityContext.fsGroup }}
+      {{- end }}
+  {{- if eq ( toString ( .Values.volumePermissions.containerSecurityContext.runAsUser )) "auto " }}
+  securityContext: {{- omit .Values.volumePermissions.containerSecurityContext "runAsUser" | toYaml | nindent 12 }}
+  {{- else }}
+  securityContext: {{- .Values.volumePermissions.containerSecurityContext | toYaml | nindent 12 }}
+  {{- end }}
+  {{- if .Values.volumePermissions.resources }}
+  resources: {{- toYaml .Values.volumePermissions.resources | nindent 12 }}
+  {{- else if ne .Values.volumePermissions.resourcesPreset "none" }}
+  resources: {{- include "common.resources.preset" (dict "type" .Values.volumePermissions.resourcesPreset) | nindent 12 }}
+  {{- end }}
+  volumeMounts:
+    - name: data
+      mountPath: {{ .Values.persistence.mountPath }}
+      subPath: {{ .Values.persistence.subPath }}
+{{- end -}}
+
+{{/*
+Init container definition for waiting for Container to be ready
+*/}}
+
+{{- define "{! cookiecutter.chart_name !}.waitForInitContainer" -}}
+- name: wait-for-container
+  image: {{ include "{! cookiecutter.chart_name !}.waitForInitContainer.image" . }}
+  imagePullPolicy: {{ .Values.waitForInitContainer.image.pullPolicy | quote }}
+  {{- if eq ( toString ( .Values.waitForInitContainer.containerSecurityContext.runAsUser )) "auto " }}
+  securityContext: {{- omit .Values.waitForInitContainer.containerSecurityContext "runAsUser" | toYaml | nindent 12 }}
+  {{- else }}
+  securityContext: {{- .Values.waitForInitContainer.containerSecurityContext | toYaml | nindent 12 }}
+  {{- end }}
+  {{- if .Values.waitForInitContainer.resources }}
+  resources: {{- toYaml .Values.waitForInitContainer.resources | nindent 12 }}
+  {{- else if ne .Values.waitForInitContainer.resourcesPreset "none" }}
+  resources: {{- include "common.waitForInitContainer.preset" (dict "type" .Values.waitForInitContainer.resourcesPreset) | nindent 12 }}
+  {{- end }}
+  command:
+    - bash
+    - -ec
+    - |
+      #!/bin/bash
+
+      set -o errexit
+      set -o nounset
+      set -o pipefail
+
+      {{ if .Values.waitForInitContainer.config.services -}}
+      wait-for-it \
+        {{- range $service := .Values.waitForInitContainer.config.services }}
+        --service {{ $service.url }} \
+        {{- end }}
+        {{- if .Values.waitForInitContainer.config.timeout }}
+        --timeout {{ .Values.waitForInitContainer.config.timeout }} \
+        {{- end -}}
+         {{- if .Values.waitForInitContainer.config.parallel }}
+        --parallel \
+        {{- end -}}
+        {{- if .Values.waitForInitContainer.config.message }}
+        -- echo "{{ .Values.waitForInitContainer.config.message }}"
+        {{- end -}}
+      {{- else -}}
+      echo "No services to wait for."
+      {{- end }}
+  env:
+    - name: BITNAMI_DEBUG
+      value: {{ ternary "true" "false" (or .Values.image.debug .Values.diagnosticMode.enabled) | quote }}
+{{- end -}}
