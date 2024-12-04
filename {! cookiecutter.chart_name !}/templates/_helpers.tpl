@@ -13,13 +13,6 @@ Return the proper {! cookiecutter.chart_title !} image name
 {{- end -}}
 
 {{/*
-Return the proper image name (for the init container volume-permissions image)
-*/}}
-{{- define "{! cookiecutter.chart_name !}.volumePermissions.image" -}}
-{{- include "common.images.image" ( dict "imageRoot" .Values.volumePermissions.image "global" .Values.global ) -}}
-{{- end -}}
-
-{{/*
 Return the proper Docker Image Registry Secret Names
 */}}
 {{- define "{! cookiecutter.chart_name !}.imagePullSecrets" -}}
@@ -245,36 +238,34 @@ Return whether Redis is enabled or not.
 {% endif -%}
 
 {{/*
-Return the proper image name (for the init container wait-for-it image)
+Return the proper image name (for the init container volume-permissions image)
 */}}
-{{- define "{! cookiecutter.chart_name !}.waitForInitContainer.image" -}}
-{{- include "common.images.image" ( dict "imageRoot" .Values.waitForInitContainer.image "global" .Values.global ) -}}
+{{- define "{! cookiecutter.chart_name !}.initContainers.volumePermissions.image" -}}
+{{- include "common.images.image" ( dict "imageRoot" .Values.volumePermissions.image "global" .Values.global ) -}}
 {{- end -}}
 
-{{- define "{! cookiecutter.chart_name !}.volumePermissions" -}}
+{{- define "{! cookiecutter.chart_name !}.initContainers.volumePermissions" -}}
 - name: volume-permissions
-  image: "{{ include "{! cookiecutter.chart_name !}.volumePermissions.image" . }}"
-  imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
+  image: "{{ include "{! cookiecutter.chart_name !}.initContainers.volumePermissions.image" . }}"
+  imagePullPolicy: {{ .Values.defaultInitContainers.volumePermissions.image.pullPolicy | quote }}
   command:
     - /bin/bash
   args:
     - -ec
     - |
       mkdir -p {{ .Values.persistence.mountPath }}
-      {{- if eq ( toString ( .Values.volumePermissions.containerSecurityContext.runAsUser )) "auto" }}
+      {{- if eq ( toString ( .Values.defaultInitContainers.volumePermissions.containerSecurityContext.runAsUser )) "auto" }}
       find {{ .Values.persistence.mountPath }} -mindepth 0 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | xargs -r chown -R $(id -u):$(id -G | cut -d " " -f2)
       {{- else }}
       find {{ .Values.persistence.mountPath }} -mindepth 0 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | xargs -r chown -R {{ .Values.containerSecurityContext.runAsUser }}:{{ .Values.podSecurityContext.fsGroup }}
       {{- end }}
-  {{- if eq ( toString ( .Values.volumePermissions.containerSecurityContext.runAsUser )) "auto " }}
-  securityContext: {{- omit .Values.volumePermissions.containerSecurityContext "runAsUser" | toYaml | nindent 12 }}
-  {{- else }}
-  securityContext: {{- .Values.volumePermissions.containerSecurityContext | toYaml | nindent 12 }}
+  {{- if .Values.defaultInitContainers.volumePermissions.containerSecurityContext.enabled }}
+  securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.defaultInitContainers.volumePermissions.containerSecurityContext "context" $) | nindent 4 }}
   {{- end }}
-  {{- if .Values.volumePermissions.resources }}
-  resources: {{- toYaml .Values.volumePermissions.resources | nindent 12 }}
-  {{- else if ne .Values.volumePermissions.resourcesPreset "none" }}
-  resources: {{- include "common.resources.preset" (dict "type" .Values.volumePermissions.resourcesPreset) | nindent 12 }}
+  {{- if .Values.defaultInitContainers.volumePermissions.resources }}
+  resources: {{- toYaml .Values.defaultInitContainers.volumePermissions.resources | nindent 4 }}
+  {{- else if ne .Values.defaultInitContainers.volumePermissions.resourcesPreset "none" }}
+  resources: {{- include "common.resources.preset" (dict "type" .Values.defaultInitContainers.volumePermissions.resourcesPreset) | nindent 4 }}
   {{- end }}
   volumeMounts:
     - name: data
@@ -283,22 +274,27 @@ Return the proper image name (for the init container wait-for-it image)
 {{- end -}}
 
 {{/*
+Return the proper image name (for the default init containers)
+*/}}
+{{- define "{! cookiecutter.chart_name !}.initContainers.wait.image" -}}
+{{ include "common.images.image" (dict "imageRoot" .Values.defaultInitContainers.wait.image "global" .Values.global) }}
+{{- end -}}
+
+{{/*
 Init container definition for waiting for Container to be ready
 */}}
 
-{{- define "{! cookiecutter.chart_name !}.waitForInitContainer" -}}
-- name: wait-for-container
-  image: {{ include "{! cookiecutter.chart_name !}.waitForInitContainer.image" . }}
-  imagePullPolicy: {{ .Values.waitForInitContainer.image.pullPolicy | quote }}
-  {{- if eq ( toString ( .Values.waitForInitContainer.containerSecurityContext.runAsUser )) "auto " }}
-  securityContext: {{- omit .Values.waitForInitContainer.containerSecurityContext "runAsUser" | toYaml | nindent 12 }}
-  {{- else }}
-  securityContext: {{- .Values.waitForInitContainer.containerSecurityContext | toYaml | nindent 12 }}
+{{- define "{! cookiecutter.chart_name !}.initContainers.wait" -}}
+- name: wait-for-it
+  image: {{ include "{! cookiecutter.chart_name !}.initContainers.wait.image" . }}
+  imagePullPolicy: {{ .Values.defaultInitContainers.wait.image.pullPolicy }}
+  {{- if .Values.defaultInitContainers.wait.containerSecurityContext.enabled }}
+  securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.defaultInitContainers.wait.containerSecurityContext "context" $) | nindent 4 }}
   {{- end }}
-  {{- if .Values.waitForInitContainer.resources }}
-  resources: {{- toYaml .Values.waitForInitContainer.resources | nindent 12 }}
-  {{- else if ne .Values.waitForInitContainer.resourcesPreset "none" }}
-  resources: {{- include "common.waitForInitContainer.preset" (dict "type" .Values.waitForInitContainer.resourcesPreset) | nindent 12 }}
+  {{- if .Values.defaultInitContainers.wait.resources }}
+  resources: {{- toYaml .Values.defaultInitContainers.wait.resources | nindent 4 }}
+  {{- else if ne .Values.defaultInitContainers.wait.resourcesPreset "none" }}
+  resources: {{- include "common.resources.preset" (dict "type" .Values.defaultInitContainers.wait.resourcesPreset) | nindent 4 }}
   {{- end }}
   command:
     - bash
@@ -310,7 +306,7 @@ Init container definition for waiting for Container to be ready
       set -o nounset
       set -o pipefail
 
-      {{ if .Values.waitForInitContainer.config.services -}}
+      {{- if .Values.waitForInitContainer.config.services -}}
       wait-for-it \
         {{- range $service := .Values.waitForInitContainer.config.services }}
         --service {{ $service.url }} \
@@ -318,7 +314,7 @@ Init container definition for waiting for Container to be ready
         {{- if .Values.waitForInitContainer.config.timeout }}
         --timeout {{ .Values.waitForInitContainer.config.timeout }} \
         {{- end -}}
-         {{- if .Values.waitForInitContainer.config.parallel }}
+        {{- if .Values.waitForInitContainer.config.parallel }}
         --parallel \
         {{- end -}}
         {{- if .Values.waitForInitContainer.config.message }}
@@ -326,7 +322,8 @@ Init container definition for waiting for Container to be ready
         {{- end -}}
       {{- else -}}
       echo "No services to wait for."
-      {{- end }}
+      {{- end -}}
+
   env:
     - name: BITNAMI_DEBUG
       value: {{ ternary "true" "false" (or .Values.image.debug .Values.diagnosticMode.enabled) | quote }}
