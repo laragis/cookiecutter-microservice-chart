@@ -241,7 +241,7 @@ Return whether Redis is enabled or not.
 Return the proper image name (for the init container volume-permissions image)
 */}}
 {{- define "{! cookiecutter.chart_name !}.initContainers.volumePermissions.image" -}}
-{{- include "common.images.image" ( dict "imageRoot" .Values.initContainers.volumePermissions.image "global" .Values.global ) -}}
+{{- include "common.images.image" ( dict "imageRoot" .Values.defaultInitContainers.volumePermissions.image "global" .Values.global ) -}}
 {{- end -}}
 
 {{- define "{! cookiecutter.chart_name !}.initContainers.volumePermissions" -}}
@@ -306,23 +306,23 @@ Init container definition for waiting for Container to be ready
       set -o nounset
       set -o pipefail
 
-      {{- if .Values.waitForInitContainer.config.services -}}
+      {{ if .Values.defaultInitContainers.wait.config.services -}}
       wait-for-it \
-        {{- range $service := .Values.waitForInitContainer.config.services }}
+        {{- range $service := .Values.defaultInitContainers.wait.config.services }}
         --service {{ $service.url }} \
         {{- end }}
-        {{- if .Values.waitForInitContainer.config.timeout }}
-        --timeout {{ .Values.waitForInitContainer.config.timeout }} \
+        {{- if .Values.defaultInitContainers.wait.config.timeout }}
+        --timeout {{ .Values.defaultInitContainers.wait.config.timeout }} \
         {{- end -}}
-        {{- if .Values.waitForInitContainer.config.parallel }}
+        {{- if .Values.defaultInitContainers.wait.config.parallel }}
         --parallel \
         {{- end -}}
-        {{- if .Values.waitForInitContainer.config.message }}
-        -- echo "{{ .Values.waitForInitContainer.config.message }}"
+        {{- if .Values.defaultInitContainers.wait.config.message }}
+        -- echo "{{ .Values.defaultInitContainers.wait.config.message }}"
         {{- end -}}
       {{- else -}}
       echo "No services to wait for."
-      {{- end -}}
+      {{ end }}
 
   env:
     - name: BITNAMI_DEBUG

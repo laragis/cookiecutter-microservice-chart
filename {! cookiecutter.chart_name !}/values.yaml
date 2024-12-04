@@ -625,15 +625,15 @@ defaultInitContainers:
   wait:
     ## @param defaultInitContainers.wait.enabled Enable init container that waits for backends to be ready
     ##
-    enabled: true
+    enabled: false
     ## Wait for it image
     ## ref: https://hub.docker.com/r/laragis/wait-for-it/tags/
-    ## @param waitForInitContainer.image.registry [default: REGISTRY_NAME] Wait for it image registry
-    ## @param waitForInitContainer.image.repository [default: REPOSITORY_NAME/os-shell] Wait for it image repository
-    ## @skip waitForInitContainer.image.tag Wait for it image tag (immutable tags are recommended)
-    ## @param waitForInitContainer.image.digest Wait for it image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag
-    ## @param waitForInitContainer.image.pullPolicy Wait for it image pull policy
-    ## @param waitForInitContainer.image.pullSecrets Wait for it image pull secrets
+    ## @param defaultInitContainers.wait.image.registry [default: REGISTRY_NAME] Wait for it image registry
+    ## @param defaultInitContainers.wait.image.repository [default: REPOSITORY_NAME/os-shell] Wait for it image repository
+    ## @skip defaultInitContainers.wait.image.tag Wait for it image tag (immutable tags are recommended)
+    ## @param defaultInitContainers.wait.image.digest Wait for it image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag
+    ## @param defaultInitContainers.wait.image.pullPolicy Wait for it image pull policy
+    ## @param defaultInitContainers.wait.image.pullSecrets Wait for it image pull secrets
     ##
     image:
       registry: docker.io
@@ -694,11 +694,11 @@ defaultInitContainers:
         type: "RuntimeDefault"
     ## Wait for it config. This object will be directly rendered
     config:
-      ## @param waitForInitContainer.config.services.name Name of the service
-      ## @param waitForInitContainer.config.services.url URL of the service
-      ## @param waitForInitContainer.config.message Message displayed when services are ready
-      ## @param waitForInitContainer.config.timeout Timeout for waiting (in seconds)
-      ## @param waitForInitContainer.config.parallel Wait for services in parallel
+      ## @param defaultInitContainers.wait.config.services.name Name of the service
+      ## @param defaultInitContainers.wait.config.services.url URL of the service
+      ## @param defaultInitContainers.wait.config.message Message displayed when services are ready
+      ## @param defaultInitContainers.wait.config.timeout Timeout for waiting (in seconds)
+      ## @param defaultInitContainers.wait.config.parallel Wait for services in parallel
       ## Example:
       ## services:
       ##   - name: wait-for-db

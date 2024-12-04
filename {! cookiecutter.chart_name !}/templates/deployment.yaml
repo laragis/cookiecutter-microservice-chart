@@ -81,7 +81,7 @@ spec:
         {{- if .Values.defaultInitContainers.wait.enabled }}
         {{- include "{! cookiecutter.chart_name !}.initContainers.wait" . | nindent 8 }}
         {{- end }}
-        {{- if and .Values.podSecurityContext.enabled .Values.defaultInitContainers.volumePermissions.enabled .Values.persistence.enabled }}
+        {{- if and .Values.defaultInitContainers.volumePermissions.enabled .Values.persistence.enabled }}
         {{- include "{! cookiecutter.chart_name !}.initContainers.volumePermissions" . | nindent 8 }}
         {{- end }}
         {{- if .Values.initContainers }}
