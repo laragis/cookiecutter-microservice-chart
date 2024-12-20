@@ -10,11 +10,6 @@
   "image_name": "{! cookiecutter.chart_name !}",
   "image_tag": "{! cookiecutter.app_version !}",
   "author_name": "Truong Thanh Tung",
-  "use_workload": [
-    "deployment",
-    "statefulset",
-    "daemonset"
-  ],
   "use_autoscaling": [
     "all",
     "hpa",
