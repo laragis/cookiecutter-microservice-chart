@@ -328,3 +328,24 @@ Init container definition for waiting for Container to be ready
     - name: BITNAMI_DEBUG
       value: {{ ternary "true" "false" (or .Values.image.debug .Values.diagnosticMode.enabled) | quote }}
 {{- end -}}
+
+{{/*
+Return the configmap with the {! cookiecutter.chart_title !} configuration
+*/}}
+{{- define "{! cookiecutter.chart_name !}.configmapName" -}}
+{{- if .Values.existingConfigmap -}}
+    {{- printf "%s" (tpl .Values.existingConfigmap $) -}}
+{{- else -}}
+    {{- printf "%s" (printf "%s-configuration" (include "common.names.fullname" .)) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return true if a configmap object should be created for {! cookiecutter.chart_title !}
+*/}}
+{{- define "{! cookiecutter.chart_name !}.createConfigmap" -}}
+{{- if and .Values.configuration (not .Values.existingConfigmap) }}
+    {{- true -}}
+{{- else -}}
+{{- end -}}
+{{- end -}}

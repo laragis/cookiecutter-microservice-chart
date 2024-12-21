@@ -28,6 +28,9 @@ spec:
     metadata:
       labels: {{- include "common.labels.standard" ( dict "customLabels" $podLabels "context" $ ) | nindent 8 }}
       annotations:
+        {{- if (include "{! cookiecutter.chart_name !}.createConfigmap" .) }}
+        checksum/configuration: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- end }}
         {%- if cookiecutter.use_db != "none" %}
         {{- if include "{! cookiecutter.chart_name !}.database.enabled" . }}
         checksum/secret-database: {{ include (print $.Template.BasePath "/secret-database.yaml") . | sha256sum }}
