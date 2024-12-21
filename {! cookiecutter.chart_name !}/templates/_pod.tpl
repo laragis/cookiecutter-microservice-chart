@@ -28,6 +28,9 @@ nodeSelector: {{- include "common.tplvalues.render" (dict "value" .Values.nodeSe
 {{- if .Values.tolerations }}
 tolerations: {{- include "common.tplvalues.render" (dict "value" .Values.tolerations "context" $) | nindent 8 }}
 {{- end }}
+{{- if .Values.topologySpreadConstraints }}
+topologySpreadConstraints: {{- include "common.tplvalues.render" (dict "value" .Values.topologySpreadConstraints "context" .) | nindent 8 }}
+{{- end }}
 {{- if .Values.priorityClassName }}
 priorityClassName: {{ .Values.priorityClassName }}
 {{- end }}
@@ -40,9 +43,6 @@ securityContext: {{- include "common.compatibility.renderSecurityContext" (dict 
 serviceAccountName: {{ include "{! cookiecutter.chart_name !}.serviceAccountName" .}}
 {{- if .Values.terminationGracePeriodSeconds }}
 terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
-{{- end }}
-{{- if .Values.topologySpreadConstraints }}
-topologySpreadConstraints: {{- include "common.tplvalues.render" (dict "value" .Values.topologySpreadConstraints "context" .) | nindent 8 }}
 {{- end }}
 initContainers:
   {{- if .Values.defaultInitContainers.wait.enabled }}
@@ -58,6 +58,9 @@ containers:
   - name: {! cookiecutter.image_name !}
     image: {{ include "{! cookiecutter.chart_name !}.image" . }}
     imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+    {{- if .Values.containerSecurityContext.enabled }}
+    securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.containerSecurityContext "context" $) | nindent 12 }}
+    {{- end }}
     {{- if .Values.diagnosticMode.enabled }}
     command: {{- include "common.tplvalues.render" (dict "value" .Values.diagnosticMode.command "context" $) | nindent 12 }}
     {{- else if .Values.command }}
@@ -67,9 +70,6 @@ containers:
     args: {{- include "common.tplvalues.render" (dict "value" .Values.diagnosticMode.args "context" $) | nindent 12 }}
     {{- else if .Values.args }}
     args: {{- include "common.tplvalues.render" ( dict "value" .Values.args "context" $) | nindent 12 }}
-    {{- end }}
-    {{- if .Values.containerSecurityContext.enabled }}
-    securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.containerSecurityContext "context" $) | nindent 12 }}
     {{- end }}
     env:
       - name: BITNAMI_DEBUG
@@ -132,9 +132,20 @@ containers:
       {{- if .Values.extraContainerPorts }}
       {{- include "common.tplvalues.render" (dict "value" .Values.extraContainerPorts "context" $) | nindent 12 }}
       {{- end }}
-    {{- if .Values.lifecycleHooks }}
-    lifecycle: {{- include "common.tplvalues.render" (dict "value" .Values.lifecycleHooks "context" $) | nindent 12 }}
+    {{- if .Values.resources }}
+    resources: {{- toYaml .Values.resources | nindent 12 }}
+    {{- else if ne .Values.resourcesPreset "none" }}
+    resources: {{- include "common.resources.preset" (dict "type" .Values.resourcesPreset) | nindent 12 }}
     {{- end }}
+    volumeMounts:
+      {{- if and .Values.persistence.enabled .Values.persistence.mountPath }}
+      - name: data
+        mountPath: {{ .Values.persistence.mountPath }}
+        subPath: {{ .Values.persistence.subPath }}
+      {{- end }}
+      {{- if .Values.extraVolumeMounts }}
+      {{- include "common.tplvalues.render" (dict "value" .Values.extraVolumeMounts "context" $) | nindent 12 }}
+      {{- end }}
     {{- if not .Values.diagnosticMode.enabled }}
     {{- if .Values.customStartupProbe }}
     startupProbe: {{- include "common.tplvalues.render" (dict "value" .Values.customStartupProbe "context" $) | nindent 12 }}
@@ -152,20 +163,9 @@ containers:
     readinessProbe: {{- include "common.tplvalues.render" (dict "value" (omit .Values.readinessProbe "enabled") "context" $) | nindent 12 }}
     {{- end }}
     {{- end }}
-    {{- if .Values.resources }}
-    resources: {{- toYaml .Values.resources | nindent 12 }}
-    {{- else if ne .Values.resourcesPreset "none" }}
-    resources: {{- include "common.resources.preset" (dict "type" .Values.resourcesPreset) | nindent 12 }}
+    {{- if .Values.lifecycleHooks }}
+    lifecycle: {{- include "common.tplvalues.render" (dict "value" .Values.lifecycleHooks "context" $) | nindent 12 }}
     {{- end }}
-    volumeMounts:
-      {{- if and .Values.persistence.enabled .Values.persistence.mountPath }}
-      - name: data
-        mountPath: {{ .Values.persistence.mountPath }}
-        subPath: {{ .Values.persistence.subPath }}
-      {{- end }}
-      {{- if .Values.extraVolumeMounts }}
-      {{- include "common.tplvalues.render" (dict "value" .Values.extraVolumeMounts "context" $) | nindent 12 }}
-      {{- end }}
   {{- if .Values.sidecars }}
   {{- include "common.tplvalues.render" (dict "value" .Values.sidecars "context" $) | nindent 8 }}
   {{- end }}

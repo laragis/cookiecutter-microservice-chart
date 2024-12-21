@@ -51,9 +51,9 @@ spec:
     whenDeleted: {{ .Values.persistentVolumeClaimRetentionPolicy.whenDeleted }}
     whenScaled: {{ .Values.persistentVolumeClaimRetentionPolicy.whenScaled }}
   {{- end }}
-  {{- if or $.Values.extraVolumeClaimTemplates (and $.Values.persistence.enabled (not $.Values.persistence.existingClaim)) }}
+  {{- if or .Values.extraVolumeClaimTemplates (and .Values.persistence.enabled (not .Values.persistence.existingClaim)) }}
   volumeClaimTemplates:
-    {{- if and $.Values.persistence.enabled (not $.Values.persistence.existingClaim) }}    
+    {{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}    
     - apiVersion: v1
       kind: PersistentVolumeClaim
       metadata:
