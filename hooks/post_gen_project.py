@@ -27,15 +27,6 @@ def remove_db_files():
   os.remove(os.path.join("templates", "secret-database.yaml"))
 
 
-# def remove_workload_files(type):
-#   workloads = ['deployment', 'statefulset', 'daemonset']
-#   filtered = list(filter(lambda x: x != type, workloads))
-#   file_names = [f"{workload}.yaml" for workload in filtered]
-
-#   for file_name in file_names:
-#     os.remove(os.path.join("templates", file_name))
-
-
 def main():
   debug = "{! cookiecutter.debug !}".lower() == "true"
 
@@ -51,9 +42,6 @@ def main():
     remove_vpa_files()
 
   print(SUCCESS + "Chart initialized, keep up the good work!" + TERMINATOR)
-
-  # Workload
-  # remove_workload_files("{! cookiecutter.use_workload !}")
 
   # Redis
   if "{! cookiecutter.use_cache !}" == "False":
