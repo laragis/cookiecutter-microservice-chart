@@ -7,7 +7,7 @@ SPDX-License-Identifier: APACHE-2.0
 Pod Spec
 */}}
 {{- define "{! cookiecutter.chart_name !}.pod" -}}
-{{- include "{! cookiecutter.chart_name !}.imagePullSecrets" . | nindent 0 }}
+{{- include "{! cookiecutter.chart_name !}.imagePullSecrets" . }}
 automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
 {{- if .Values.hostAliases }}
 # yamllint disable rule:indentation
